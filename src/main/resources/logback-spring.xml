@@ -3,7 +3,7 @@
     <!-- SpringBoot的日志基础配置, 及变量设置 -->
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
-    <springProperty scope="context" name="appname" source="spring.application.name" defaultValue="mockdata"/>
+    <springProperty scope="context" name="appname" source="spring.application.name" defaultValue="mock-data"/>
     <springProperty scope="context" name="loghome" source="log.home" defaultValue="/app/log"/>
     <springProperty scope="context" name="pattern" source="pattern"  defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n"/>
 
