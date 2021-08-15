@@ -1,8 +1,8 @@
 // import test from './alert'
 window.onload = function() {
     // 配置项目地址及响应拦截器
-    axios.defaults.baseURL = 'http://localhost:8080/';
     //axios.defaults.baseURL = 'http://ali.hepengju.com:8080';
+    axios.defaults.baseURL = '/';
     axios.defaults.headers.post['Content-Type'] = 'application/json';
 
     axios.interceptors.response.use(function(response) {
