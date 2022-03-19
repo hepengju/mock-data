@@ -1,11 +1,12 @@
 package com.hepengju.mockdata.generator.gen400_custom.gen410_name;
 
-
 import com.hepengju.mockdata.common.DataConst;
 import com.hepengju.mockdata.generator.AbstractStringGenerator;
+import com.hepengju.mockdata.util.RandomUtil;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
-import org.apache.commons.lang3.RandomUtils;
+
+import java.util.ArrayList;
 
 /**
  * 中文姓
@@ -21,10 +22,10 @@ import org.apache.commons.lang3.RandomUtils;
 @ApiModel("中文姓生成器") @Data
 public class ChineseFirstNameGenerator extends AbstractStringGenerator {
 	
-	private String[] firstNameArray = DataConst.surnames;
+	private ArrayList<String> surnames = DataConst.surnames;
 	
 	@Override
 	public String generate() {
-		return firstNameArray[RandomUtils.nextInt(0, firstNameArray.length)];
+		return RandomUtil.randomOne(surnames);
 	}
 }

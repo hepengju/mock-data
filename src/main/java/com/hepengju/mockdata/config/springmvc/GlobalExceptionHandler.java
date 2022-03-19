@@ -1,14 +1,15 @@
 package com.hepengju.mockdata.config.springmvc;
 
-import com.hepengju.mockdata.common.BaseConst;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import com.hepengju.mockdata.common.JsonR;
-import com.hepengju.mockdata.util.StackUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import static com.hepengju.mockdata.common.BaseConst.ErrorCode.UNKNOWN_ERROR;
+
 /**
- * 全局的异常处理器
+ * 全局异常处理器
  */
 @RestControllerAdvice @Slf4j
 public class GlobalExceptionHandler {
@@ -20,7 +21,7 @@ public class GlobalExceptionHandler {
     public JsonR handleException(Exception e) {
         log.error(e.getMessage(), e);
         return JsonR.err(e.getMessage())
-                .setErrCode(BaseConst.ErrorCode.UNKNOWN_ERROR)
-                .setErrDetail(StackUtil.getStackTrace(e));
+                .setErrCode(UNKNOWN_ERROR)
+                .setErrDetail(ExceptionUtil.stacktraceToString(e));
     }
 }

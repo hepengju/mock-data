@@ -1,6 +1,5 @@
 package com.hepengju.mockdata.util;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -22,8 +21,8 @@ public class BeanUtil {
      */
     public static String getProperty(final Object bean, final String name) {
         try {
-            return BeanUtils.getProperty(bean, name);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return cn.hutool.core.bean.BeanUtil.getProperty(bean, name);
+        } catch (Exception e) {
             return null;
         }
     }
@@ -35,14 +34,14 @@ public class BeanUtil {
         try {
             if (propertyValue instanceof String) {
                 if (StringUtils.isNotBlank((String) propertyValue)) {
-                    org.apache.commons.beanutils.BeanUtils.setProperty(obj, propertyName, propertyValue);
+                    cn.hutool.core.bean.BeanUtil.setProperty(obj, propertyName, propertyValue);
                 }
             } else {
                 if (propertyValue != null) {
-                    org.apache.commons.beanutils.BeanUtils.setProperty(obj, propertyName, propertyValue);
+                    cn.hutool.core.bean.BeanUtil.setProperty(obj, propertyName, propertyValue);
                 }
             }
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (Exception e) {
         }
     }
 
@@ -54,8 +53,8 @@ public class BeanUtil {
         String[] notBlankPropertyNames = getNotBlankPropertyNames(source);
         for (String notBlankPropertyName : notBlankPropertyNames) {
             try {
-                setNotBlankProperty(target, notBlankPropertyName, BeanUtils.getSimpleProperty(source, notBlankPropertyName));
-            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                setNotBlankProperty(target, notBlankPropertyName, cn.hutool.core.bean.BeanUtil.getProperty(source, notBlankPropertyName));
+            } catch (Exception e) {
             }
         }
     }

@@ -7,6 +7,8 @@ import com.hepengju.mockdata.util.RandomUtil;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
+import java.util.ArrayList;
+
 /**
  * 中文名
  * 
@@ -19,7 +21,7 @@ import lombok.Data;
 @ApiModel("中文名生成器")@Data
 public class ChineseLastNameGenerator extends AbstractStringGenerator {
 
-	private String[] words = DataConst.words;
+	private ArrayList<String> words = DataConst.words;
 
 	@Override
 	public String generate() {

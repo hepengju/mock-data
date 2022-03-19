@@ -49,7 +49,7 @@ public class DBUtil {
 				if (!conn.isClosed())
 					conn.close();
 			} catch (SQLException e) {
-				log.error(StackUtil.getStackTrace(e));
+				log.error("释放连接异常", e);
 			}
 		}
 	}
@@ -62,7 +62,7 @@ public class DBUtil {
 			try {
 				conn.rollback();
 			} catch (SQLException e) {
-				log.error(StackUtil.getStackTrace(e));
+				log.error("回滚异常", e);
 			}
 		}
 	}
@@ -76,7 +76,7 @@ public class DBUtil {
 				if (!rst.isClosed())
 					rst.close();
 			} catch (SQLException e) {
-				log.error(StackUtil.getStackTrace(e));
+				log.error("关闭结果集异常", e);
 			}
 		}
 	}

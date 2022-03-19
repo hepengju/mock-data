@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -39,7 +40,7 @@ public class IdCardGenerator extends AbstractStringGenerator {
 	private Date minDate;
 	private Date maxDate;
 
-	private String[] areas = DataConst.idCardAreas;
+	private ArrayList<String> areas = DataConst.idCardAreas;
 	private static String[] ValCodeArr = { "1", "0", "X", "9", "8", "7", "6", "5", "4","3", "2" };
 	private static String[] Wi = { "7", "9", "10", "5", "8", "4", "2", "1", "6", "3", "7","9", "10", "5", "8", "4", "2" };
 	

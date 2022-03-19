@@ -1,0 +1,5 @@
+# spring boot 2.6.x结合swagger3.0.0不兼容问题
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

@@ -3,10 +3,7 @@ package com.hepengju.mockdata.util;
 import org.apache.commons.lang3.RandomUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -61,7 +58,7 @@ public class RandomUtil {
 	/**
 	 * 数组中随机取N个
 	 */
-	public static String randomNum(String[] array, int num) {
+	public static String randomNum(ArrayList<String> array, int num) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < num; i++) {
 			sb.append(randomOne(array));
@@ -69,7 +66,7 @@ public class RandomUtil {
 		return sb.toString();
 	}
 	
-	public static String randomNum(String[] array, int startInclusive, int endExclusive) {
+	public static String randomNum(ArrayList<String> array, int startInclusive, int endExclusive) {
 		StringBuilder sb = new StringBuilder();
 		int num = RandomUtils.nextInt(startInclusive, endExclusive);
 		for (int i = 0; i < num; i++) {

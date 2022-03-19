@@ -1,7 +1,5 @@
 package com.hepengju.mockdata.util;
 
-import eu.bitwalker.useragentutils.Browser;
-import eu.bitwalker.useragentutils.UserAgent;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.io.IOUtils;
@@ -115,30 +113,30 @@ public class WebUtil implements ApplicationContextAware {
 		private String browser;    // 浏览器
 	}
 
-	/**
-	 * 获取设备信息
-	 */
-	public static Device getDevice() {
-		String userAgentHeader = getHttpServletRequest().getHeader(USER_AGENT);
-		return getDevice(userAgentHeader);
-	}
+	// /**
+	//  * 获取设备信息
+	//  */
+	// public static Device getDevice() {
+	// 	String userAgentHeader = getHttpServletRequest().getHeader(USER_AGENT);
+	// 	return getDevice(userAgentHeader);
+	// }
 
-	public static Device getDevice(String userAgentHeader) {
-		UserAgent userAgent = UserAgent.parseUserAgentString(userAgentHeader);
-		String brower = userAgent.getBrowser().getName();
-		//考虑手机端的浏览器访问, 此处采用解析为Unknown时空格分隔取第一个
-		if (Browser.UNKNOWN.getName().equals(brower) && userAgentHeader != null) {
-			brower = userAgentHeader.split(" ")[0];
-		}
+	// public static Device getDevice(String userAgentHeader) {
+	// 	UserAgent userAgent = UserAgent.parseUserAgentString(userAgentHeader);
+	// 	String brower = userAgent.getBrowser().getName();
+	// 	//考虑手机端的浏览器访问, 此处采用解析为Unknown时空格分隔取第一个
+	// 	if (Browser.UNKNOWN.getName().equals(brower) && userAgentHeader != null) {
+	// 		brower = userAgentHeader.split(" ")[0];
+	// 	}
+	//
+	// 	String osName = userAgent.getOperatingSystem().getName();
+	// 	String deviceType = StringUtils.containsAny(userAgentHeader,"Android", "iPhone", "iPad") ? MOBILE : COMPUTER;
+	// 	return new Device(deviceType, osName, brower);
+	// }
 
-		String osName = userAgent.getOperatingSystem().getName();
-		String deviceType = StringUtils.containsAny(userAgentHeader,"Android", "iPhone", "iPad") ? MOBILE : COMPUTER;
-		return new Device(deviceType, osName, brower);
-	}
-
-	public static boolean isComputer() {
-		return COMPUTER.equals(getDevice().getDeviceType());
-	}
+	// public static boolean isComputer() {
+	// 	return COMPUTER.equals(getDevice().getDeviceType());
+	// }
 
 	/**
 	 * 根据Request获取IP地址

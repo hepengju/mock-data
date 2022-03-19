@@ -18,8 +18,6 @@ public class DoubleGenerator extends AbstractNumberGenerator<Double> {
 	@Override
 	public Double generate() {
 		return RandomUtils.nextDouble(min, max);
-		//double doubleValue = RandomUtils.nextDouble(min, max);
-		//return new BigDecimal(doubleValue).setScale(scale, BigDecimal.ROUND_HALF_UP).doubleValue();
 	}
 
 }

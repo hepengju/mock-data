@@ -1,13 +1,13 @@
 package com.hepengju.mockdata.util;
 
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.hepengju.mockdata.core.GeneratorAnno;
 import com.hepengju.mockdata.generator.Generator;
 import com.hepengju.mockdata.generator.gen300_string.NullGenerator;
 import lombok.SneakyThrows;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
@@ -130,11 +130,11 @@ public class GeneratorUtil {
     private static void setNotBlankProperty(Generator generator, String propertyName, Object propertyValue) throws InvocationTargetException, IllegalAccessException {
         if (propertyValue instanceof String) {
             if (StringUtils.isNotBlank((String) propertyValue)) {
-                BeanUtils.setProperty(generator, propertyName, propertyValue);
+                BeanUtil.setProperty(generator, propertyName, propertyValue);
             }
         } else {
             if (propertyValue != null) {
-                BeanUtils.setProperty(generator, propertyName, propertyValue);
+                BeanUtil.setProperty(generator, propertyName, propertyValue);
             }
         }
     }

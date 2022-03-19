@@ -30,7 +30,7 @@ public class PasswordGenerator extends AbstractStringGenerator {
     @Override
     public String generate() {
         String part01 = RandomStringUtils.randomAlphanumeric(min, max);// 随机的字母数字(6-15位)
-        String part02 = RandomUtil.randomNum(DataConst.sepecialChar, 0, 2);
+        String part02 = RandomUtil.randomNum(DataConst.specialChar, 0, 2);
         return RandomUtil.randomNum(min, max + 1, part01, part02);
     }
 }

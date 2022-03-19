@@ -78,6 +78,7 @@ public class JsonR<T> {
     public JsonR addData(JsonR data) {
         return data;
     }
+
     public JsonR addData(com.baomidou.mybatisplus.extension.plugins.pagination.Page page) {  // mybatis plus的分页信息
         return this.addData(page.getRecords())
                    .setPage(new Page().setPageNum(page.getCurrent())
@@ -92,6 +93,8 @@ public class JsonR<T> {
                                       .setPages(page.getPages())
                                       .setTotal(page.getTotal()));
     }
+
+    /*
     public JsonR addData(com.github.pagehelper.Page page) { // pagehelper的分页信息1
         return this.addData(page.getResult())
                    .setPage(new Page().setPageNum(page.getPageNum())
@@ -106,6 +109,7 @@ public class JsonR<T> {
                                       .setPages(page.getPages())
                                       .setTotal(page.getTotal()));
     }
+    */
 
     public JsonR addData(JSONObject data) {
         JSONObject json = (JSONObject) data;

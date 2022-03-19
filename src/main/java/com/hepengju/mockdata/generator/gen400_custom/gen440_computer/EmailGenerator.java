@@ -11,6 +11,7 @@ import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.annotation.Order;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +32,7 @@ import java.util.List;
 public class EmailGenerator extends AbstractStringGenerator {
 
 	private static List<String> sepList = Arrays.asList("","_", ".");
-	private String[] mailSupplies = DataConst.mailSupplies;
+	private ArrayList<String> mailSupplies = DataConst.mailSupplies;
 	private ChineseNamePinyinGenerator pinyinGenerator = new ChineseNamePinyinGenerator();
 	private EnglishNameGenerator englishNameGenerator = new EnglishNameGenerator();
 	private MobileGenerator mobileGenerator = new MobileGenerator();
