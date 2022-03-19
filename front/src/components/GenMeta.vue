@@ -51,8 +51,8 @@
           <Checkbox v-model="meta.codeMulti" :disabled="meta.code == null"/>
         </FormItem>   
 
-        <Button type="primary" style="margin-left: 20px" @click="save">保存</Button>
-        <Button                style="margin-left: 20px" @click="back">还原</Button>
+        <Button type="primary" style="margin-left: 20px" @click="save" :disabled="selected == null">保存</Button>
+        <Button type="warning" style="margin-left: 20px" @click="back" :disabled="selected == null">还原</Button>
       </Row>
     </Form>
   </div>
@@ -78,7 +78,8 @@ export default {
         code: null,
         codeMulti: false,
       },
-      color: 'black'
+      color: 'black',
+      selected: null
     }
   },
   methods: {
@@ -93,6 +94,7 @@ export default {
     this.$bus.$on("hoverGen", (gen, color) => {
       this.meta = gen;
       this.color = color;
+      this.selected = null
     });
   },
   beforeDestroy() {

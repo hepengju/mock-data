@@ -1,14 +1,10 @@
 <template>
   <div id="app">
     <div id="title">
-          <!-- 生成器 -->
           <GenCard icon="ios-calendar-outline"  title="日期数据"    type="warning" width="200px" :gens="dataList.date_number"/>
           <GenCard icon="ios-construct-outline" title="字符生成器"  type="success" width="230px" :gens="dataList.string"/>
           <GenCard icon="ios-construct"         title="定制生成器"  type="info"    width="340px" :gens="dataList.custom"/>
-
-          <!-- 样例数据 -->
           <GenSample />
-
           <GenMeta />
     </div>
   </div>
@@ -450,28 +446,10 @@ export default {
 }
 
 #title {
-    height: 286px;
-    display: flex;
-}
-
-
-/* #title_inner{
+    height: 290px;
+    // background-color: tomato;
     display: flex;
     justify-content: space-evenly;
-} */
-
-// #title_inner button{
-//     width: 100px;
-//     margin: 2px
-// }
-
-// #title_inner ul:nth-of-type(1) {
-//     width: 200px;
-// }
-
-// .title_div ul{
-//     display: flex;
-//     flex-wrap: wrap;
-// }
+}
 
 </style>
