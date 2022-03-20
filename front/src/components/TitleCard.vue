@@ -1,5 +1,5 @@
 <template>
-  <div class="gen-card" :style="{ width: width }">
+  <div class="title-card" :style="{ width: width }">
     <H2Title :icon="icon" :title="computedTitle" />
 
     <!-- 注意此处使用mouseenter, 而不是mourseover(这个在按钮内部滑动时会触发多次(有子元素)) -->
@@ -15,7 +15,7 @@
 import H2Title from "./H2Title";
 
 export default {
-  name: "GenCard",
+  name: "TitleCard",
   components: {
     H2Title,
   },
@@ -62,7 +62,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.gen-card {
+.title-card {
   &:hover {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
   }

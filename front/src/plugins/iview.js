@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import 'view-design/dist/styles/iview.css'
-import { Card, Button, Row, Col, Form, FormItem, Input, Checkbox, DropdownMenu, DropdownItem, InputNumber, Icon, Tooltip, Dropdown, Table, Modal } from 'view-design';
+import { Card, Button, Row, Col, Form, FormItem, Input, Checkbox, DropdownMenu, DropdownItem, Select, Option, InputNumber, Icon, Tooltip, Dropdown, Table, Modal } from 'view-design';
 
 // 引入IView, 按需引入
 export default {
@@ -15,6 +15,8 @@ export default {
         Vue.component('Checkbox', Checkbox);
         Vue.component('DropdownMenu', DropdownMenu);
         Vue.component('DropdownItem', DropdownItem);
+        Vue.component('Select', Select);
+        Vue.component('Option', Option);
         Vue.component('InputNumber', InputNumber);
         Vue.component('Icon', Icon);
         Vue.component('Tooltip', Tooltip);

@@ -1,5 +1,5 @@
 <template>
-  <div class="gen-sample">
+  <div class="title-sample">
     <H2Title icon="md-clipboard" title="样例数据"/>
     <ul :style="{color: color}">
       <li v-for="(data,index) in arrs" :key="index">{{data}}</li>
@@ -11,7 +11,7 @@
 import H2Title from './H2Title'
 
 export default {
-  name: "GenSample",
+  name: "TitleSample",
   components: {
     H2Title
   },
@@ -33,11 +33,10 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 
-.gen-sample {
+.title-sample {
   width: 250px;
-  // background-color: tomato;
 
   &:hover {
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);

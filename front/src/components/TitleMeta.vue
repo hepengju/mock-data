@@ -1,5 +1,5 @@
 <template>
-  <div class="gen-meta">
+  <div class="title-meta">
     <H2Title icon="ios-cog" title="详细配置" />
 
     <Form ref="meta" :model="meta" :label-width="60" class="form" >
@@ -62,7 +62,7 @@
 import H2Title from "./H2Title"
 
 export default {
-  name: 'GenMeta',
+  name: 'TitleMeta',
   components: {
     H2Title
   },
@@ -104,7 +104,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.gen-meta {
+.title-meta {
   width: 450px;
   .form {
     padding-right: 25px;
