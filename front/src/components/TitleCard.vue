@@ -5,7 +5,7 @@
     <!-- 注意此处使用mouseenter, 而不是mourseover(这个在按钮内部滑动时会触发多次(有子元素)) -->
     <ul>
       <li v-for="gen in gens" :key="gen.name">
-        <Button :style="{backgroundColor: gen.color, color: '#fff'}" @click="genClick(gen)" @mouseenter.native="hoverGen(gen)">
+        <Button :style="{backgroundColor: gen.color, color: '#fff'}" @click="addGen(gen)" @mouseenter.native="hoverGen(gen)">
           {{ gen.columnTitle }}
         </Button>
       </li>
@@ -45,8 +45,8 @@ export default {
     }
   },
   methods: {
-    genClick(gen) {
-      this.$bus.$emit("clickGen", gen);
+    addGen(gen) {
+      this.$bus.$emit("addGen", gen);
     },
     hoverGen(gen) {
       this.$bus.$emit("hoverGen", gen);
@@ -57,9 +57,6 @@ export default {
 
 <style lang="less" scoped>
 .title-card {
-  &:hover {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  }
 
   ul {
     display: flex;

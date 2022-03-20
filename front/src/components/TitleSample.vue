@@ -38,10 +38,6 @@ export default {
 .title-sample {
   width: 250px;
 
-  &:hover {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  }
-
   li {
     margin-left: 20%;
     white-space: nowrap;

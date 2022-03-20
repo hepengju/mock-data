@@ -10,13 +10,13 @@ function showModal(msg) {
 }
 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
-axios.interceptors.response.use(function (response) {
+axios.interceptors.response.use(res => {
     // 下载文件的处理
-    if (response.config.responseType == 'blob') {
+    if (res.config.responseType == 'blob') {
         // 正常下载服务器返回的是此响应头
-        if (response.headers['content-type'] == 'application/octet-stream') {
-            let fileName = response.headers['original-filename-encode']
-            let blob = new Blob([response.data]);
+        if (res.headers['content-type'] == 'application/octet-stream') {
+            let fileName = res.headers['original-filename-encode']
+            let blob = new Blob([res.data]);
             if (window.navigator.msSaveOrOpenBlob) {
                 try {
                     window.navigator.msSaveOrOpenBlob(blob, fileName);
@@ -39,18 +39,24 @@ axios.interceptors.response.use(function (response) {
                 showModal(jsonR.errMsg)
             }
         }
-        // 出现错误的处理
-    } else if (response.headers['content-type'] == 'application/json' && response.data.errCode != 0) {
-        showModal(response.data.errMsg);
-    }
-    return response
-}, function (error) {
-    showModal("服务器连接失败！")
-    return Promise.reject(error);
+        return
+
+    // 出现错误的处理
+    } else if (res.headers['content-type'] == 'application/json' && res.data.errCode != 0) {
+        return Promise.reject(res.data.errMsg);
+    } 
+
+    // 拆了数据包再返回
+    return res.data.data
+}, err => {
+    showModal("服务器连接失败")
+    return Promise.reject(err);
 });
 
-export default {
-    install() {
-        Vue.prototype.$axios = axios
-    }
-};
+// 为了统一所有接口到API, 这里就不安装在vue身上了
+// export default {
+//     install() {
+//         Vue.prototype.$axios = axios
+//     }
+// };
+export default axios

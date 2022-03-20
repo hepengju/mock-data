@@ -74,9 +74,14 @@ export default {
 
 <style lang="less" scoped>
 .center-line {
+  height: 40px;
+  overflow: hidden;
+  margin: 10px auto;
+
   button {
     margin-left: 10px;
   }
+
   form {
     float: right;
   }
