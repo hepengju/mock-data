@@ -22,9 +22,9 @@ export default {
     };
   },
   mounted() {
-    this.$bus.$on("hoverGen", (gen, color) => {
+    this.$bus.$on("hoverGen", gen => {
       this.arrs = gen.sampleData;
-      this.color = color
+      this.color = gen.color
     });
   },
   beforeDestroy() {

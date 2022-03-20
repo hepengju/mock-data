@@ -5,7 +5,9 @@
     <!-- 注意此处使用mouseenter, 而不是mourseover(这个在按钮内部滑动时会触发多次(有子元素)) -->
     <ul>
       <li v-for="gen in gens" :key="gen.name">
-        <Button :type="type" @click="genClick(gen)" @mouseenter.native="hoverGen(gen, $event)">{{ gen.columnTitle }}</Button>
+        <Button :style="{backgroundColor: gen.color, color: '#fff'}" @click="genClick(gen)" @mouseenter.native="hoverGen(gen)">
+          {{ gen.columnTitle }}
+        </Button>
       </li>
     </ul>
   </div>
@@ -28,10 +30,6 @@ export default {
       type: String,
       default: "ios-car",
     },
-    type: {
-      type: String,
-      default: "info",
-    },
     width: {
       type: String,
       default: "200px",
@@ -44,18 +42,14 @@ export default {
   computed: {
     computedTitle() {
       return this.title + (this.gens instanceof Array ? "(" + this.gens.length + ")" : "");
-    },
+    }
   },
   methods: {
     genClick(gen) {
       this.$bus.$emit("clickGen", gen);
     },
-    hoverGen(gen, e) {
-      let color = "black";
-      try {
-        color = window.getComputedStyle(e.target, null).backgroundColor;
-      } catch (e) {}
-      this.$bus.$emit("hoverGen", gen, color);
+    hoverGen(gen) {
+      this.$bus.$emit("hoverGen", gen);
     },
   },
 };
