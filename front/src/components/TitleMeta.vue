@@ -95,6 +95,10 @@ export default {
     this.$bus.$on("clickColumn", (meta) => {
       this.meta = meta;
     });
+  },
+  beforeDestroy(){
+    this.$bus.$off("hoverGen")
+    this.$bus.$off("clickColumn")
   }
 };
 </script>

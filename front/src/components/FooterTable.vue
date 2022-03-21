@@ -18,7 +18,7 @@ export default {
   },
 
   methods: {
-    addGen(gen) {
+    addColumn(gen) {
       const key = nanoid()
 
       // 数据
@@ -41,7 +41,9 @@ export default {
         minWidth: 100,
         ellipsis: true,
 
-        meta: {...gen, isModified: true}, // 记录着这个生成器的相关配置, 以便配置修改
+        // 保留原始的gen 和 可以修改的meta
+        gen,  
+        meta: {...gen, isModified: true},
 
         // 自定义渲染数据和表头
         render: (h, params) => {
@@ -60,12 +62,12 @@ export default {
             h('div',{
                 style: { color: gen.color },
                 'class': ['thTitleClass'],
-                on: { click: () => { this.clickTitle(params)} }
+                on: { click: () => { this.clickColumn(params)} }
               }, params.column.title),
             h('Icon', {
               props: { type: "md-close" },
               'class': ['thCloseClass'],
-              on: { click: () => {this.clickTitleClose(params)} }
+              on: { click: () => {this.deleteColumn(params)} }
             })
           ])
         }
@@ -73,13 +75,13 @@ export default {
     },
 
     // 点击某一列
-    clickTitle(params){
+    clickColumn(params){
       this.$bus.$emit("clickColumn", params.column.meta);
       return false
     },
 
     // 关闭某一列
-    clickTitleClose(params) {
+    deleteColumn(params) {
       const key = params.column.key
       this.columns = this.columns.filter(c => c.key != key)
       this.rows.forEach(r => delete r[key])
@@ -89,12 +91,11 @@ export default {
       return false
     }
   },
-
   mounted() {
-    this.$bus.$on("addGen", this.addGen);
+    this.$bus.$on("addColumn", this.addColumn);
   },
   beforeDestroy(){
-    this.$bus.$off("addGen")
+    this.$bus.$off("addColumn")
   }
 };
 </script>
