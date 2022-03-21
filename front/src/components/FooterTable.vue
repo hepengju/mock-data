@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import { nanoid } from "nanoid";
+import { nanoid } from "nanoid"
 import { getData, refreshTable, downTable } from '@/apis'
 
 export default {
@@ -107,6 +107,7 @@ export default {
             h('div',{
                 style: { color: gen.color },
                 'class': ['thTitleClass'],
+                attrs: {draggable: true},
                 on: { mouseenter: () => { this.hoverGen(params)} }
               }, params.column.title),
             h('Icon', {
