@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import 'view-design/dist/styles/iview.css'
-import { Card, Button, Row, Col, Form, FormItem, Input, Checkbox, DropdownMenu, DropdownItem, Select, Option, InputNumber, Icon, Tooltip, Dropdown, Table, Modal } from 'view-design';
+import { Card, Button, Row, Col, Form, FormItem, Input, Checkbox, 
+  DropdownMenu, DropdownItem, Select, Option, InputNumber, Icon, 
+  Tooltip, Dropdown, Table, Modal , Message} from 'view-design';
 
 // 引入IView, 按需引入
 export default {
@@ -25,5 +27,6 @@ export default {
         Vue.component('Modal', Modal);
 
         Vue.prototype.$Modal = Modal
+        Vue.prototype.$Message = Message
     }
 }

@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import axios from "axios";
 import { Modal } from 'view-design';
 
@@ -43,6 +42,7 @@ axios.interceptors.response.use(res => {
 
     // 出现错误的处理
     } else if (res.headers['content-type'] == 'application/json' && res.data.errCode != 0) {
+        showModal(res.data.errMsg)
         return Promise.reject(res.data.errMsg);
     } 
 

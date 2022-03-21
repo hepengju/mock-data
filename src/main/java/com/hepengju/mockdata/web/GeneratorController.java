@@ -40,8 +40,10 @@ public class GeneratorController {
     // -------------------- 微信接口 --------------------
     @ApiOperation("获取数据")
     @GetMapping("getData")
-    public List<String> getData(@RequestParam String name, @RequestParam(defaultValue = "5") int sampleSize) {
-        return genService.getData(name, sampleSize);
+    public List<String> getData(GeneratorMeta meta,
+                                @RequestParam(defaultValue = "5") int sampleSize
+                                ) {
+        return genService.getData(meta, sampleSize);
     }
 
     @ApiOperation("获取可用生成器名称")

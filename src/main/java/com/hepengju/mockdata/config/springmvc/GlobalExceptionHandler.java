@@ -1,6 +1,7 @@
 package com.hepengju.mockdata.config.springmvc;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.hepengju.mockdata.common.JsonR;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,7 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public JsonR handleException(Exception e) {
         log.error(e.getMessage(), e);
-        return JsonR.err(e.getMessage())
+        return JsonR.err(StrUtil.blankToDefault(e.getMessage(), e.toString()))
                 .setErrCode(UNKNOWN_ERROR)
                 .setErrDetail(ExceptionUtil.stacktraceToString(e));
     }

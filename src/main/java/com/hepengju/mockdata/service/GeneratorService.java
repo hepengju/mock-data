@@ -62,20 +62,18 @@ public class GeneratorService{
     /**
      * 获取数据
      */
-    public List<String> getData(String name, int sampleSize) {
-        // GeneratorMeta meta = nameToMeta(name);
-
-        // 准确匹配
-        GeneratorMeta meta = metaMap.get(name);
-
-        // 模糊匹配
-        if (meta == null) {
+    public List<String> getData(GeneratorMeta meta, int sampleSize) {
+        try {
+            meta.setClassName(metaMap.get(meta.getName()).getClassName());
+        } catch (Exception e) {
             for (String key : metaMap.keySet()) {
-                if(name.toLowerCase().contains(key.toLowerCase())) {
+                if(meta.getName().toLowerCase().contains(key.toLowerCase())) {
                     meta = metaMap.get(key);
+                    break;
                 }
             }
         }
+
         return meta.toGenerator().generateStringList(sampleSize);
     }
 

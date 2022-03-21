@@ -1,17 +1,61 @@
 <template>
   <div class="footer-table">
+    <div class="center-line" v-show="columns.length > 0">
+      <Button type="primary" @click.native="refreshAll" :disabled="processing">刷新表格</Button>
+      <Button type="error" @click.native="deleteAll" :disabled="processing">删除全部</Button>
+
+      <Form :model="config" :label-width="80">
+        <Row>
+          <Col :span="7">
+            <FormItem prop="sampleSize" label-for="sampleSize" label="下载行数">
+                <InputNumber element-id="sampleSize" :max="10000" :min="10" :step="100" v-model="config.sampleSize" :disabled="processing"/>
+            </FormItem>
+          </Col>
+
+          <Col :span="7">
+            <FormItem prop="fileName" label-for="fileName" label="文件名称">
+                <Input element-id="fileName" type="text" v-model="config.fileName" :disabled="processing"/>
+            </FormItem>
+          </Col>
+
+          <Col :span="6">
+            <FormItem label="格式" label-for="fileFormat" :label-width="60">
+              <Select v-model="config.fileFormat" :disabled="processing">
+                <Option value="excel">Excel</Option>
+                <Option value="sql">SQL</Option>
+                <Option value="csv">CSV</Option>
+                <Option value="tsc">TSV</Option>
+              </Select>
+            </FormItem>
+          </Col>
+
+          <FormItem :label-width="10">
+              <Button type="primary" @click="downTable" :disabled="processing">下载<span v-if="processing">({{this.processingNumber}})</span></Button>
+          </FormItem>
+        </Row>
+      </Form>
+    </div>
+
     <span  class="prompt" v-if="columns.length == 0">请点击上方生成器，生成所需模拟数据...</span>
-    <Table class="table"  v-else :columns="columns" :data="rows" stripe border :max-height="360"></Table>
+    <Table class="table"  v-else :columns="columns" :data="rows" stripe border :max-height="380"></Table>
   </div>
 </template>
 
 <script>
 import { nanoid } from "nanoid";
+import { getData, refreshTable, downTable } from '@/apis'
 
 export default {
   name: "FooterTable",
   data() {
     return {
+      config: {
+        sampleSize: 1000,
+        fileName: '用户表',
+        fileFormat: 'excel'
+      },
+      processing: false,
+      processingNumber: 0,
       columns: [],
       rows: [{},{},{},{},{},   {},{},{},{},{}],
     };
@@ -42,8 +86,7 @@ export default {
         ellipsis: true,
 
         // 保留原始的gen 和 可以修改的meta
-        gen,  
-        meta: {...gen, isModified: true},
+        meta: {...gen, isModified: true, columnKey: key},
 
         // 自定义渲染数据和表头
         render: (h, params) => {
@@ -57,12 +100,14 @@ export default {
         },
         renderHeader: (h, params) => {
           return h('div', {
-            style: { display: 'flex'} // 横向排列且让标题自增长, 关闭按钮大小固定
+            style: { 
+              display: 'flex'
+            } // 横向排列且让标题自增长, 关闭按钮大小固定
           }, [
             h('div',{
                 style: { color: gen.color },
                 'class': ['thTitleClass'],
-                on: { click: () => { this.clickColumn(params)} }
+                on: { mouseenter: () => { this.hoverGen(params)} }
               }, params.column.title),
             h('Icon', {
               props: { type: "md-close" },
@@ -74,13 +119,11 @@ export default {
       });
     },
 
-    // 点击某一列
-    clickColumn(params){
-      this.$bus.$emit("clickColumn", params.column.meta);
+    hoverGen(params){
+      this.$bus.$emit("hoverGen", params.column.meta);
       return false
     },
 
-    // 关闭某一列
     deleteColumn(params) {
       const key = params.column.key
       this.columns = this.columns.filter(c => c.key != key)
@@ -89,13 +132,78 @@ export default {
         this.columns = []
       }
       return false
-    }
+    },
+
+    updateMeta(meta) {
+      const {name, min, max, format, prefix, suffix, code, codeMulti} = {...meta}
+      const params = {sampleSize: 10, name, min, max, format, prefix, suffix, code, codeMulti}
+
+      getData(params).then(data => {
+        this.columns.forEach(c => {
+          if (c.key != meta.columnKey) return
+          c.meta = meta
+          c.title = meta.columnTitle
+        })
+
+        for (let i = 0; i < 10; i++) {
+          this.rows[i][meta.columnKey] = data[i]       
+        }
+      })
+    },
+
+    refreshAll(){
+      const metaList = this.columns.map(c => c.meta).filter(m => m != null)
+
+      refreshTable({
+        metaList,
+        sampleSize: 10
+      }).then(data => {
+        this.rows = data
+      })
+
+    },
+
+    deleteAll(){
+      this.$Modal.confirm({
+          title: '系统提示',
+          content: `确认删除全部列吗？`,
+          onOk: ()=>{
+            this.columns = []
+            this.rows = [{},{},{},{},{},   {},{},{},{},{}]
+          }
+      });
+    },
+
+    downTable(){
+      this.processingNumber = 10
+      this.processing = true
+      
+      const metaList = this.columns
+          .map(c => {
+            let m = {...c.meta}
+            delete m.sampleData // 减少参数的体积
+            return m
+          })
+          .filter(m => m.name) // 去掉序号列
+
+      downTable({...this.config, metaList}).then( res => {
+          let timer = setInterval(() => {
+              this.processingNumber--
+              if (this.processingNumber == 0) {
+                this.processing = false
+                clearInterval(timer)
+              }
+            }, 1000)
+      })
+    },
   },
   mounted() {
     this.$bus.$on("addColumn", this.addColumn);
+    this.$bus.$on("updateMeta", this.updateMeta)
   },
   beforeDestroy(){
     this.$bus.$off("addColumn")
+    this.$bus.$off("updateMeta")
   }
 };
 </script>
@@ -103,10 +211,25 @@ export default {
 <style lang="less">
 .footer-table {
 
+  .center-line {
+    height: 40px;
+    // overflow: hidden;
+    margin: 10px auto 8px;
+
+    button {
+      margin-left: 10px;
+    }
+
+    form {
+      float: right;
+      height: 40px;
+    }
+  }
+
   .prompt {
     display: block;
     text-align: center;
-    padding-top: 100px;
+    padding-top: 200px;
     color: #aaaaaa;
     font-size: 18px;
     font-style: italic;

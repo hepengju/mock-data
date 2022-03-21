@@ -2,6 +2,7 @@ package com.hepengju.mockdata.util;
 
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.hepengju.mockdata.core.GeneratorAnno;
@@ -162,6 +163,8 @@ public class GeneratorUtil {
             , String fileFormat
             , String fileName, String tableName
             , List<String> columnTitleList, List<String> columnNameList){
+
+        if (StrUtil.isBlank(tableName)) tableName = fileName;
 
         fileName = fileName + "-" + DateUtil.yyyyMMddHHmmss();
         if ("sql".equals(fileFormat)) {

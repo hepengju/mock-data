@@ -1,8 +1,11 @@
+# @host = https://www.hepengju.com
+@host = http://localhost:8080
+
 ### 获取生成器
 GET {{host}}/getGenMap
 
 ### 获取数据
-GET {{host}}/getData?name=chineseName&sampleSize=3
+GET {{host}}/getData?name=chineseName&prefix=xxx&suffix=yyy&sampleSize=3
 
 ### 刷新表格
 POST {{host}}/refreshTable

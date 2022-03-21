@@ -44,6 +44,7 @@ public class GeneratorMeta {
 
     @ApiModelProperty(value = "列英文代码: 用于生成Insert语句的列名称, 默认为后端生成器的英文名称(同name)", example = "birth")
     private String columnName;
+
     //-----------------------------------------------------------
     @ApiModelProperty(value = "最小值", example = "60")
     private String  min;

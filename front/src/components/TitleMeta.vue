@@ -52,7 +52,6 @@
         </FormItem>   
 
         <Button type="primary" style="margin-left: 20px" @click="save" :disabled="meta.isModified === undefined">保存</Button>
-        <Button type="warning" style="margin-left: 20px" @click="back" :disabled="meta.isModified === undefined">还原</Button>
       </Row>
     </Form>
   </div>
@@ -77,23 +76,20 @@ export default {
         suffix:'',
         code: null,
         codeMulti: false,
-      },
+      }
     }
   },
   methods: {
     save(){
-
+      this.$bus.$emit("updateMeta", this.meta)
     },
-    back(){
-
-    }
   },
   mounted() {
     this.$bus.$on("hoverGen", (gen) => {
-      this.meta = gen;
+      this.meta = {...gen};
     });
     this.$bus.$on("clickColumn", (meta) => {
-      this.meta = meta;
+      this.meta = {...meta};
     });
   },
   beforeDestroy(){

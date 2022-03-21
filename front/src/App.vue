@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- 顶部栏 -->
-    <div id="title">
+    <div class="title">
       <TitleCard icon="ios-calendar-outline"  title="日期和数字"                 width="200px" :gens="dataList.date_number"/>
       <TitleCard icon="ios-construct-outline" title="字符生成器"  type="success" width="230px" :gens="dataList.string"/>
       <TitleCard icon="ios-construct"         title="定制生成器"  type="info"    width="340px" :gens="dataList.custom"/>
@@ -9,27 +9,23 @@
       <TitleMeta />
     </div>
 
-    <!-- 中间行 -->
-    <CenterLine/>
-
     <!-- 底部表格 -->
     <FooterTable/>
   </div>
 </template>
 
 <script>
-import {getGenMap} from './apis'
+import { getGenMap } from './apis'
 
 import TitleCard from './components/TitleCard'
 import TitleSample from './components/TitleSample'
 import TitleMeta from './components/TitleMeta'
-import CenterLine from './components/CenterLine'
 import FooterTable from './components/FooterTable'
 
 export default {
   name: 'App',
   components: {
-      TitleCard, TitleSample, TitleMeta, CenterLine, FooterTable
+      TitleCard, TitleSample, TitleMeta, FooterTable
   },
   data () {
     return {
@@ -54,11 +50,11 @@ export default {
           });
         }
       })
-    }
+    },
   },
-  mounted: function () {
-      this.init();
-  },
+  mounted(){
+    this.init();
+  }
 }
 </script>
 
@@ -69,16 +65,11 @@ export default {
   list-style: none;
 }
 
-#title {
+.title {
   height: 290px;
   overflow: hidden;
   display: flex;
   justify-content: space-evenly;
-}
-
-.table {
-  border: 5px blue solid;
-  width: 100%;
 }
 
 </style>

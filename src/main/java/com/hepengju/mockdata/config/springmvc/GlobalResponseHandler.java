@@ -32,7 +32,7 @@ public class GlobalResponseHandler implements ResponseBodyAdvice {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         // swagger文档等不能全局处理, 即仅仅处理自己定义的Controller
         String path = request.getURI().getPath();
-        if (!apis.contains(path)) return body;
+        if (!apis.contains(path.replace("/",""))) return body;
         if (body instanceof JsonR) return body;
         return JsonR.ok().addData(body);
     }

@@ -6,21 +6,18 @@ export function getGenMap() {
 }
 
 // 获取单个生成器的数据
-export function getData(name, sampleSize = 10) {
-  return axios.get('getData', {
-    params: {
-      name,
-      sampleSize
-    }
-  })
+export function getData(params) {
+  return axios.get('getData', { params })
 }
 
 // 刷新表格
-export function refreshTable(params) {
-  return axios.post('refreshTable', { params })
+export function refreshTable(data) {
+  return axios.post('refreshTable', data)
 }
 
 // 下载数据
-export function downTable(params) {
-  return axios.post('downTable', { params })
+export function downTable(data) {
+  return axios.post('downTable', data, {
+    responseType: 'blob'
+  })
 }
