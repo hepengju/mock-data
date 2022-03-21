@@ -214,8 +214,7 @@ export default {
 
   .center-line {
     height: 40px;
-    // overflow: hidden;
-    margin: 10px auto 8px;
+    margin: 5px auto 8px;
 
     button {
       margin-left: 10px;
@@ -242,6 +241,9 @@ export default {
     .thTitleClass {
       cursor: pointer;
       flex-grow: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       padding: 8px 18px; // 样式 .ivu-table th 下的padding被关闭, 在这里补回来(原因: 点击事件的范围)
       
       &:hover {
