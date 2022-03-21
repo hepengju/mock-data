@@ -51,8 +51,8 @@
           <Checkbox v-model="meta.codeMulti" :disabled="meta.code == null"/>
         </FormItem>   
 
-        <Button type="primary" style="margin-left: 20px" @click="save" :disabled="meta.isModified === true">保存</Button>
-        <Button type="warning" style="margin-left: 20px" @click="back" :disabled="meta.isModified === true">还原</Button>
+        <Button type="primary" style="margin-left: 20px" @click="save" :disabled="meta.isModified === undefined">保存</Button>
+        <Button type="warning" style="margin-left: 20px" @click="back" :disabled="meta.isModified === undefined">还原</Button>
       </Row>
     </Form>
   </div>
@@ -77,8 +77,6 @@ export default {
         suffix:'',
         code: null,
         codeMulti: false,
-
-        isModified: false // 前台添加
       },
     }
   },
@@ -94,10 +92,10 @@ export default {
     this.$bus.$on("hoverGen", (gen) => {
       this.meta = gen;
     });
-  },
-  beforeDestroy() {
-    this.$bus.$off("hoverGen");
-  },
+    this.$bus.$on("clickColumn", (meta) => {
+      this.meta = meta;
+    });
+  }
 };
 </script>
 

@@ -7,7 +7,6 @@
 
 <script>
 import { nanoid } from "nanoid";
-import { getData } from "@/apis";
 
 export default {
   name: "FooterTable",
@@ -20,79 +19,73 @@ export default {
 
   methods: {
     addGen(gen) {
-      getData(gen.name).then((sampleList) => {
-        const key = nanoid()
+      const key = nanoid()
 
-        // 数据
-        for (let i = 0; i < 10; i++) {
-          this.rows[i][key] = sampleList[i]
-        }
+      // 数据
+      for (let i = 0; i < 10; i++) {
+        this.rows[i][key] = gen.sampleData[i]
+      }
 
-        // 标题
-        if (this.columns.length == 0) {
-          this.columns.push({
-            type: 'index',
-            width: 60,
-            align: 'center'
-          })          
-        }
-
+      // 标题
+      if (this.columns.length == 0) {
         this.columns.push({
-          key: key,
-          title: gen.columnTitle,
-          minWidth: 100,
-          ellipsis: true,
+          type: 'index',
+          width: 60,
+          align: 'center'
+        })          
+      }
 
-          meta: {...gen, isModified: true}, // 记录着这个生成器的相关配置, 以便配置修改
+      this.columns.push({
+        key: key,
+        title: gen.columnTitle,
+        minWidth: 100,
+        ellipsis: true,
 
-          // 自定义渲染数据和表头
-          render: (h, params) => {
-            return h('div', {
-              style: {
-                color: gen.color,
-                paddingLeft: '18px',
-                paddingRight: '18px'
-              }
-            }, params.row[key])
-          },
-          renderHeader: (h, params) => {
-            return h('div', {
-              style: {
-                display: 'flex'
-              }
-            }, [
-              h('div',{
-                style: {
-                  color: gen.color,
-                  cursor: 'pointer',
-                  flexGrow: 1,
-                  padding: '8px 18px', // 样式 .ivu-table th 下的padding被关闭, 在这里补回来(原因: 点击事件的范围)
-                },
-                on: {
-                  click: () => { this.clickTitle(params.column) }
-                }
+        meta: {...gen, isModified: true}, // 记录着这个生成器的相关配置, 以便配置修改
+
+        // 自定义渲染数据和表头
+        render: (h, params) => {
+          return h('div', {
+            style: {
+              color: gen.color,
+              paddingLeft: '18px',
+              paddingRight: '18px'
+            }
+          }, params.row[key])
+        },
+        renderHeader: (h, params) => {
+          return h('div', {
+            style: { display: 'flex'} // 横向排列且让标题自增长, 关闭按钮大小固定
+          }, [
+            h('div',{
+                style: { color: gen.color },
+                'class': ['thTitleClass'],
+                on: { click: () => { this.clickTitle(params)} }
               }, params.column.title),
-
-              h('Icon', {
-                props: {
-                  type: "md-close"
-                },
-                style: {
-                  fontSize: '24px',
-                  cursor: 'pointer',
-                  padding: '8px',
-                  borderLeft: '1px solid #e8eaec'
-                }
-              })
-            ])
-          }
-        })
+            h('Icon', {
+              props: { type: "md-close" },
+              'class': ['thCloseClass'],
+              on: { click: () => {this.clickTitleClose(params)} }
+            })
+          ])
+        }
       });
     },
 
-    clickTitle(column){
-      console.log(111, column)
+    // 点击某一列
+    clickTitle(params){
+      this.$bus.$emit("clickColumn", params.column.meta);
+      return false
+    },
 
+    // 关闭某一列
+    clickTitleClose(params) {
+      const key = params.column.key
+      this.columns = this.columns.filter(c => c.key != key)
+      this.rows.forEach(r => delete r[key])
+      if (this.columns.length == 1) {
+        this.columns = []
+      }
       return false
     }
   },
@@ -120,6 +113,28 @@ export default {
 
   .table {
     width: 100%;
+
+    .thTitleClass {
+      cursor: pointer;
+      flex-grow: 1;
+      padding: 8px 18px; // 样式 .ivu-table th 下的padding被关闭, 在这里补回来(原因: 点击事件的范围)
+      
+      &:hover {
+        background-color: #bfa;
+      }
+    }
+
+    .thCloseClass {
+      font-size: 24px;
+      cursor: pointer;
+      padding: 8px;
+      border-left: '1px solid #e8eaec';
+      cursor: pointer;
+      
+      &:hover {
+        background-color: #bfa;
+      }
+    }
 
     // 解决设计界面中表格出现滚动条问题: 上面加入scoped则不生效!! 不知为何, 优先级? 
     .ivu-table td {
