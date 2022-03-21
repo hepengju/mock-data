@@ -30,7 +30,7 @@ axios.interceptors.response.use(res => {
             }
         } else {
             // 下载过程中发生错误, 返回的响应头是 'application/json'
-            let errBlob = new Blob([resp.data], { type: 'application/json' });
+            let errBlob = new Blob([res.data], { type: 'application/json' });
             let fr = new FileReader();
             fr.readAsText(errBlob);
             fr.onload = function () {
