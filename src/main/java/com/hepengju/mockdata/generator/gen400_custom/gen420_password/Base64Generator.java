@@ -13,7 +13,7 @@ import org.springframework.core.annotation.Order;
  *
  * @author hepengju
  */
-@ApiModel("Base编码") @Order(424)
+@ApiModel("Base64编码") @Order(424)
 public class Base64Generator extends AbstractStringGenerator {
 
 	@Override
