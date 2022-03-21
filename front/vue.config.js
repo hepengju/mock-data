@@ -5,5 +5,6 @@ module.exports = defineConfig({
   devServer: {
     // proxy: 'http://ali.hepengju.com:8080/'
     proxy: 'http://localhost:8080/'
-  }
+  },
+  productionSourceMap: false
 })
