@@ -19,7 +19,7 @@ import com.hepengju.mockdata.generator.gen400_custom.gen430_phone.TelephoneGener
 import com.hepengju.mockdata.generator.gen400_custom.gen440_computer.EmailGenerator;
 import com.hepengju.mockdata.generator.gen400_custom.gen440_computer.IPv4Generator;
 import com.hepengju.mockdata.generator.gen400_custom.gen440_computer.UUIDGenerator;
-import com.hepengju.mockdata.generator.gen400_custom.gen450_card.IdCardGenerator;
+import com.hepengju.mockdata.generator.gen400_custom.gen450_card.IdentityCardGenerator;
 import com.hepengju.mockdata.generator.gen400_custom.gen460_address.ChinaAddressGenerator;
 import com.hepengju.mockdata.generator.gen400_custom.gen460_address.ChinaCityGenerator;
 import com.hepengju.mockdata.generator.gen400_custom.gen460_address.ChinaProvinceGenerator;
@@ -132,7 +132,7 @@ public class GeneratorTest {
 
     @Test
     public void testGen450_card(){
-        testGenerator(new IdCardGenerator());
+        testGenerator(new IdentityCardGenerator());
     }
 
     @Test

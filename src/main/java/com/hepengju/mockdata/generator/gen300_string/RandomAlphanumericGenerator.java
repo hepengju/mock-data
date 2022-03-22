@@ -6,7 +6,7 @@ import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.core.annotation.Order;
 
-@ApiModel("随机字母数字生成器") @Data @Order(305)
+@ApiModel("字母数字生成器") @Data @Order(305)
 public class RandomAlphanumericGenerator extends AbstractStringGenerator {
 
     private int min = 6;

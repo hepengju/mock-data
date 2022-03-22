@@ -11,7 +11,7 @@ import org.springframework.core.annotation.Order;
  *
  * @author hepengju
  */
-@ApiModel("Sha256密码生成器") @Order(423)
+@ApiModel("Sha256") @Order(423)
 public class Sha256Generator extends AbstractStringGenerator {
 
     @Override

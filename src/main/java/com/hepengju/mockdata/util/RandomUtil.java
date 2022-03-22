@@ -58,15 +58,15 @@ public class RandomUtil {
 	/**
 	 * 数组中随机取N个
 	 */
-	public static String randomNum(ArrayList<String> array, int num) {
+	public static String randomNum(List<String> list, int num) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < num; i++) {
-			sb.append(randomOne(array));
+			sb.append(randomOne(list));
 		}
 		return sb.toString();
 	}
 	
-	public static String randomNum(ArrayList<String> array, int startInclusive, int endExclusive) {
+	public static String randomNum(List<String> array, int startInclusive, int endExclusive) {
 		StringBuilder sb = new StringBuilder();
 		int num = RandomUtils.nextInt(startInclusive, endExclusive);
 		for (int i = 0; i < num; i++) {

@@ -12,7 +12,7 @@ import org.springframework.core.annotation.Order;
  *
  * @author hepengju
  */
-@ApiModel("Md5密码生成器") @Order(422)
+@ApiModel("Md5") @Order(422)
 public class Md5Generator extends AbstractStringGenerator {
 
 	@Override

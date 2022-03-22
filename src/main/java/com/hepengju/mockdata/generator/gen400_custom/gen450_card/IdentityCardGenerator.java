@@ -11,8 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 身份证号码
@@ -31,8 +31,8 @@ import java.util.Date;
  *      （2）计算模 Y = mod(S, 11)
  *      （3）通过模得到对应的校验码 Y: 0 1 2 3 4 5 6 7 8 9 10 校验码: 1 0 X 9 8 7 6 5 4 3 2
  */
-@Data @ApiModel("身份证号生成器") @Order(451)
-public class IdCardGenerator extends AbstractStringGenerator {
+@Data @ApiModel("身份证号") @Order(451)
+public class IdentityCardGenerator extends AbstractStringGenerator {
 
 	private String min = "1900-01-01";
 	private String max = "2100-12-31";
@@ -40,7 +40,7 @@ public class IdCardGenerator extends AbstractStringGenerator {
 	private Date minDate;
 	private Date maxDate;
 
-	private ArrayList<String> areas = DataConst.idCardAreas;
+	private List<String> areas = DataConst.idCardAreas;
 	private static String[] ValCodeArr = { "1", "0", "X", "9", "8", "7", "6", "5", "4","3", "2" };
 	private static String[] Wi = { "7", "9", "10", "5", "8", "4", "2", "1", "6", "3", "7","9", "10", "5", "8", "4", "2" };
 	
@@ -67,7 +67,7 @@ public class IdCardGenerator extends AbstractStringGenerator {
 		return strVerifyCode;
 	}
 
-	public IdCardGenerator() {
+	public IdentityCardGenerator() {
 		this.setMin(this.min);
 		this.setMax(this.max);
 	}
