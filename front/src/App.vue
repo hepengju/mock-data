@@ -1,61 +1,42 @@
 <template>
-  <div id="app">
-    <!-- 顶部栏 -->
-    <div class="title">
-      <TitleCard icon="ios-calendar-outline"  title="日期和数字"                 width="200px" :gens="dataList.date_number"/>
-      <TitleCard icon="ios-construct-outline" title="字符生成器"  type="success" width="230px" :gens="dataList.string"/>
-      <TitleCard icon="ios-construct"         title="定制生成器"  type="info"    width="340px" :gens="dataList.custom"/>
-      <TitleSample />
-      <TitleMeta />
-    </div>
+    <div class="title" >
+        <HeaderGen name="date_number" title="日期和数字" width="200px" :gens="dataList.date_number" />
+        <HeaderGen name="string"      title="字符生成器" width="260px" :gens="dataList.string" />
+        <HeaderGen name="custom"      title="定制生成器" width="500px" :gens="dataList.custom" />
 
-    <!-- 底部表格 -->
-    <FooterTable/>
-  </div>
+        <HeaderSample name="sample" title="样例数据"/>
+        <HeaderMeta   name="meta"   title="详细配置"/>
+    </div>
 </template>
 
-<script>
-import { getGenMap } from './apis'
+<script setup>
+import { reactive, onMounted } from 'vue';
+import { getGenMap } from './apis';
+import HeaderGen from './components/HeaderGen.vue';
+import HeaderSample from './components/HeaderSample.vue';
+import HeaderMeta from './components/HeaderMeta.vue';
 
-import TitleCard from './components/TitleCard'
-import TitleSample from './components/TitleSample'
-import TitleMeta from './components/TitleMeta'
-import FooterTable from './components/FooterTable'
+let dataList = reactive({
+    date_number: [],
+    string: [],
+    custom: []
+})
 
-export default {
-  name: 'App',
-  components: {
-      TitleCard, TitleSample, TitleMeta, FooterTable
-  },
-  data () {
-    return {
-      dataList:{
-        date_number: [],
-        string:[],
-        custom:[]
-      }
-    }
-  },
-  methods: {
-    init() {
-      getGenMap().then(data => {
-        this.dataList = data
+onMounted(() => {
+    getGenMap().then(data => {
         // 添加生成器的颜色
-        for (const genType in this.dataList) {
-          this.dataList[genType].forEach(gen => {
-            if      (genType == 'string') gen.color = '#19be6b'         // 字符: 按钮 success 的颜色
-            else if (genType == 'custom') gen.color = '#2db7f5'         // 定制: 按钮 info    的颜色
-            else if (gen.name.startsWith('date')) gen.color = '#f16643' // 日期: 按钮 error   的颜色
-            else gen.color = '#ff9900'                                  // 数字: 按钮 warning 的颜色
-          });
+        for (const genType in data) {
+            dataList[genType] = data[genType]
+            dataList[genType].forEach(gen => {
+                     if (genType == 'string') gen.color = '#f56c6c'         // 字符: 按钮 danger  的颜色
+                else if (genType == 'custom') gen.color = '#409eff'         // 定制: 按钮 success 的颜色
+                else if (gen.name.startsWith('date')) gen.color = '#909399' // 日期: 按钮 info    的颜色
+                else gen.color = '#e6a23c'                                  // 数字: 按钮 warning 的颜色
+            });
         }
-      })
-    },
-  },
-  mounted(){
-    this.init();
-  }
-}
+    })
+})
+
 </script>
 
 <style lang="less">
@@ -66,10 +47,14 @@ export default {
 }
 
 .title {
-  height: 290px;
-  overflow: hidden;
-  display: flex;
-  justify-content: space-evenly;
-}
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-evenly;
 
+    &>div {
+        margin: 0 5px;
+    }
+}
 </style>
+
+

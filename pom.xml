@@ -12,7 +12,7 @@
 
     <groupId>com.hepengju</groupId>
     <artifactId>mock-data</artifactId>
-    <version>0.1.0</version>
+    <version>2.1.0</version>
 
     <name>模拟数据生成器</name>
 

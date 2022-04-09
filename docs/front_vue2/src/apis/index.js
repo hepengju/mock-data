@@ -1,4 +1,4 @@
-import axios from '../plugins/axios'
+import axios from './axios'
 
 // 初始化, 获取所有生成器
 export function getGenMap() {
