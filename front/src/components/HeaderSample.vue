@@ -24,14 +24,15 @@ bus.on('hoverGen', gen => {
 
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+// 样例数据: 去掉弹性并指定宽度(避免生成器变化时的宽度抖动), 内部的li文字超出则省略
 .sample {
     flex: 0 0 250px;
     overflow: hidden;
 
     li {
         font-size: 14px;
-        margin-left: 10px;
+        margin-left: 15px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

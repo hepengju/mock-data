@@ -1,14 +1,14 @@
 <template>
-    <div class="card" :style="{width: width}">
+    <div class="card" :style="{ width: width }">
         <h2>
             <el-icon>
-                <calendar      v-if="name == 'date_number'" />
-                <tickets       v-if="name == 'string'     " />
-                <medal         v-if="name == 'custom'     " />
-                <data-analysis v-if="name == 'sample'     " />
-                <setting       v-if="name == 'meta'       " />
+                <calendar v-if="name == 'date_number'" />
+                <tickets v-if="name == 'string'" />
+                <medal v-if="name == 'custom'" />
+                <data-analysis v-if="name == 'sample'" />
+                <setting v-if="name == 'meta'" />
             </el-icon>
-            <span>{{ title }} </span>
+            <span>{{ title }}</span>
         </h2>
 
         <hr />
@@ -17,15 +17,16 @@
 </template>
 
 <script setup>
-import { Calendar, DataAnalysis, Medal, Tickets, Setting} from '@element-plus/icons-vue'
+import { Calendar, DataAnalysis, Medal, Tickets, Setting } from '@element-plus/icons-vue'
 defineProps(['name', 'title', 'width'])
-
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .card {
-    border: 3px solid tomato;
+    // 开发展示布局
+    // border: 3px solid tomato;
 
+    // 居中, 图标对齐, 图标和标题间距
     h2 {
         font-size: 16px;
         text-align: center;
@@ -35,10 +36,11 @@ defineProps(['name', 'title', 'width'])
         }
 
         span {
-            margin-left: 3px;
+            margin-left: 5px;
         }
     }
 
+    // 分割线
     hr {
         margin: 5px 0px;
         background-color: #e8eaec;
@@ -46,6 +48,4 @@ defineProps(['name', 'title', 'width'])
         border: none;
     }
 }
-
-
 </style>

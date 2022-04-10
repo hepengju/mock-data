@@ -1,6 +1,6 @@
 <template>
     <Card :name="name" :title="title" class="meta">
-        <el-form ref="formRef" :model="meta" label-width="60px" :style="{color: meta.color}">
+        <el-form ref="formRef" :model="meta" label-width="60px">
             <el-row>
                 <el-col :span="12">
                     <el-form-item label="标题" for="columnTitle">
@@ -57,8 +57,8 @@
                     </el-form-item>
                 </el-col>
 
-                <el-button type="primary">保存</el-button>
-                <el-button type="danger" @click="resetForm">重置</el-button>
+                <el-button type="primary" @click="saveForm"  :disabled="meta.isModified === undefined">保存</el-button>
+                <el-button type="danger"  @click="resetForm" :disabled="meta.isModified === undefined">重置</el-button>
             </el-row>
         </el-form>
     </Card>
@@ -89,14 +89,16 @@ bus.on('hoverGen', gen => {
     meta.value = {...bakMeta}
 })
 
-
+function saveForm(meta){
+    console.log('保存', meta)
+}
 function resetForm(){
     meta.value = {...bakMeta}
 }
 
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .meta {
     flex: 0 0 400px;
 }
