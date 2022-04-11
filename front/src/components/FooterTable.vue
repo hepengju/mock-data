@@ -37,19 +37,28 @@
     <div class="prompt" v-if="columns.length == 0">请点击上方生成器，生成所需模拟数据...</div>
     <el-table v-else :data="rows" border stripe ref="table">
         <el-table-column type="index" label="#" align="center" fixed="left" />
-        <el-table-column v-for="col in columns" :prop="col.key" :label="col.label">
+        <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
-                <span :style="{ color: col.color }">{{ scope.row[col.key] }}</span>
+                <span
+                    :style="{ color: col.color }"
+                    @mousemove="mouseMove(index)"
+                >{{ scope.row[col.key] }}</span>
             </template>
 
             <template #header>
                 <div class="title">
-                    <div class="name" @mouseenter="hoverColumn(col)">
+                    <div
+                        class="name"
+                        @mouseenter="hoverColumn(col)"
+                        @mousemove="mouseMove(index)"
+                        @mousedown="mouseDown(index)"
+                    >
                         <span :style="{ color: col.color, marginLeft: '10px' }">{{ col.label }}</span>
                     </div>
                     <div class="icon" @click="deleteColumn(col)">
                         <close-bold style="width: 1em; height: 1em; margin: 0 10px" />
                     </div>
+                    <!-- <span class="line"></span> -->
                 </div>
             </template>
         </el-table-column>
@@ -60,7 +69,7 @@
 import { CloseBold } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { nanoid } from "nanoid";
-import { getCurrentInstance, onUpdated, reactive } from 'vue';
+import { getCurrentInstance, onUpdated, reactive, toRaw } from 'vue';
 import { getData, refreshTable, downTable } from '../apis';
 import bus from '../plugins/bus';
 
@@ -208,6 +217,50 @@ onUpdated(() => {
         getCurrentInstance().proxy.$refs.table.doLayout()
     }
 })
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~拖动效果~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const dragStateInit = {
+    start: -1, // 起始元素的 index
+    end: -1, // 移动鼠标时所覆盖的元素 index
+    dragging: false, // 是否正在拖动
+    direction: undefined // 拖动方向
+}
+let dragState = { ...dragStateInit }
+
+// 鼠标按下开始拖动
+function mouseDown(index) {
+    dragState.dragging = true
+    dragState.start = index
+    // const table = document.getElementsByClassName('el-table__inner-wrapper')[0]
+    // const lines = document.getElementsByClassName('line')
+    // for (let line of lines) {
+    //     line.style.height = table.clientHeight - 1 + 'px'
+    //     line.style.width = line.parentElement.parentElement.clientWidth + 'px'
+    // }
+
+    document.addEventListener('mouseup', mouseUp)
+}
+
+// 鼠标抬起, 移动列, 拖拽状态恢复初始值, 并移出监听
+function mouseUp() {
+    const { start, end } = dragState
+    if (start >= 0 && end >= 0 && start != end) {
+        console.log(`起始: ${start}, 结束: ${end}`)
+        const tmp = columns.splice(start, 1) // tmp是一个代理对象 Proxy, 因此序列化一下
+        const arr = JSON.parse(JSON.stringify(tmp))
+        columns.splice(end, 0, ...arr)
+    }
+    dragState = { ...dragStateInit }
+    document.removeEventListener('mouseup', mouseUp)
+}
+
+// 拖动中, 一直记录着最后的索引位置
+function mouseMove(index) {
+    if (dragState.dragging) {
+        dragState.end = index
+    }
+}
+
 </script>
 
 <style lang="less">
@@ -266,9 +319,14 @@ onUpdated(() => {
             padding-top: 3px;
         }
 
-        .name:hover,
+        .name:hover {
+            background-color: #bfa;
+            cursor: move;
+        }
+
         .icon:hover {
             background-color: #bfa;
+            cursor: pointer;
         }
     }
 }
