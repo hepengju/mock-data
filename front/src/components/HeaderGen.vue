@@ -13,8 +13,8 @@
 </template>
 
 <script setup>
-import Card from './Card.vue'
-import bus from '../plugins/bus'
+import bus from '../plugins/bus';
+import Card from './Card.vue';
 
 defineProps(['name', 'title', 'width', 'gens'])
 

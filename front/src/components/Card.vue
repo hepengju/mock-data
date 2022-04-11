@@ -23,9 +23,6 @@ defineProps(['name', 'title', 'width'])
 
 <style lang="less" scoped>
 .card {
-    // 开发展示布局
-    // border: 3px solid tomato;
-
     // 居中, 图标对齐, 图标和标题间距
     h2 {
         font-size: 16px;
