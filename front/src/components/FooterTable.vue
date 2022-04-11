@@ -38,17 +38,21 @@
         stripe
         empty-text="请点击上方生成器，生成所需模拟数据..."
     >
-        <el-table-column type="index" label="#" align="center" fixed="left" />
-        <el-table-column v-for="gen in columns">
+        <el-table-column type="index" label="#" align="center" fixed="left"/>
+        <el-table-column v-for="gen in columns" :prop="gen.key" :label="gen.columnTitle">
             <template #default="scope">
                 <span :style="{ color: gen.color }">{{ scope.row[gen.key] }}</span>
             </template>
 
             <template #header>
-                <span :style="{ color: gen.color, lineHeight: '29px' }">{{ gen.columnTitle }}</span>
-                <el-icon>
-                    <close-bold :style="{ width: '20px', height: '20px' }" />
-                </el-icon>
+                <div class="title">
+                    <div class="name">
+                        <span :style="{ color: gen.color, marginLeft: '10px' }">{{ gen.columnTitle }}</span>
+                    </div>
+                    <div class="icon">
+                        <close-bold style="width: 1em; height: 1em; margin: 0 10px" />
+                    </div>
+                </div>
             </template>
         </el-table-column>
     </el-table>
@@ -117,7 +121,7 @@ function downData() {
     margin-right: auto;
 }
 
-// 按钮右侧的表单样式
+// 按钮右侧的表单样式, 并定制第三个input(select)的宽度
 .el-form--inline .el-form-item {
     margin-bottom: 0;
     margin-right: 20px;
@@ -135,20 +139,46 @@ function downData() {
     padding-top: 100px;
 }
 
-.el-table {
-    // 覆盖掉默认的表格内部的标题和文字颜色: 序号列显示为黑色
-    color: black;
-    thead {
-        color: black;
+// 表格标题
+.el-table__header-wrapper {
+    .el-table__cell,
+    .cell {
+        padding: 0 !important;
     }
 
-    // 标题和行减少行高
+    .title {
+        display: flex;
+        height: 40px;
+        line-height: 40px;
+
+        // 列名占据左侧部分, 且弹性增长
+        .name {
+            margin-right: auto;
+            flex-grow: 1;
+        }
+
+        // 图标显示合适大小并肉眼调整居中
+        .icon {
+            font-size: 20px;
+            padding-top: 3px;
+        }
+
+        .name:hover,
+        .icon:hover {
+            background-color: #bfa;
+        }
+    }
+}
+
+// 表格数据
+.el-table__body-wrapper {
+    // 减少行高
     .el-table__cell {
         padding: 5px 0;
         height: 32px;
     }
 
-    // 单元格多余省略显示
+    // 文字多余省略显示
     .cell {
         white-space: nowrap;
         overflow: hidden;
