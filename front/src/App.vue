@@ -1,8 +1,8 @@
 <template>
     <div class="header">
-        <HeaderGen name="date_number" title="日期和数字" width="200px" :gens="dataList.date_number" />
-        <HeaderGen name="string" title="字符生成器" width="260px" :gens="dataList.string" />
-        <HeaderGen name="custom" title="定制生成器" width="500px" :gens="dataList.custom" />
+        <HeaderGen title="日期和数字" width="200px" :gens="dataList.date_number" name="date_number" />
+        <HeaderGen title="字符生成器" width="260px" :gens="dataList.string" name="string" />
+        <HeaderGen title="定制生成器" width="500px" :gens="dataList.custom" name="custom" />
 
         <HeaderSample name="sample" title="样例数据" />
         <HeaderMeta name="meta" title="详细配置" />
@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from 'vue';
+import { reactive } from 'vue';
 import { getGenMap } from './apis';
 import FooterTable from './components/FooterTable.vue';
 import HeaderGen from './components/HeaderGen.vue';
@@ -25,19 +25,17 @@ let dataList = reactive({
     custom: []
 })
 
-onMounted(() => {
-    getGenMap().then(data => {
-        // 添加生成器的颜色
-        for (const genType in data) {
-            dataList[genType] = data[genType]
-            dataList[genType].forEach(gen => {
-                if (genType == 'string') gen.color = '#19be6b'         // 字符: 按钮 danger  的颜色
-                else if (genType == 'custom') gen.color = '#409eff'         // 定制: 按钮 success 的颜色
-                else if (gen.name.startsWith('date')) gen.color = '#909399' // 日期: 按钮 info    的颜色
-                else gen.color = '#ff9900'                                  // 数字: 按钮 warning 的颜色
-            });
-        }
-    })
+getGenMap().then(data => {
+    // 添加生成器的颜色
+    for (const genType in data) {
+        dataList[genType] = data[genType]
+        dataList[genType].forEach(gen => {
+                 if (genType == 'string') gen.color = '#19be6b'         // 字符: 按钮 danger  的颜色
+            else if (genType == 'custom') gen.color = '#409eff'         // 定制: 按钮 success 的颜色
+            else if (gen.name.startsWith('date')) gen.color = '#909399' // 日期: 按钮 info    的颜色
+            else gen.color = '#ff9900'                                  // 数字: 按钮 warning 的颜色
+        });
+    }
 })
 </script>
 

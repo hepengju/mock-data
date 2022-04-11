@@ -34,13 +34,8 @@
         </div>
     </el-row>
 
-    <el-table
-        v-show="columns.length > 0"
-        :data="rows"
-        border
-        stripe
-        empty-text="请点击上方生成器，生成所需模拟数据..."
-    >
+    <div class="prompt" v-if="columns.length == 0">请点击上方生成器，生成所需模拟数据...</div>
+    <el-table v-else :data="rows" border stripe>
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="col in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
@@ -228,10 +223,11 @@ function downData() {
 }
 
 // 默认没有数据时显示文字样式
-.el-table__empty-text {
+.prompt {
+    text-align: center;
     font-size: 18px;
     font-style: italic;
-    padding-top: 100px;
+    padding-top: 200px;
 }
 
 // 表格的默认颜色改为黑色 ==> 序号列显示为黑色
