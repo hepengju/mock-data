@@ -35,7 +35,7 @@
     </el-row>
 
     <div class="prompt" v-if="columns.length == 0">请点击上方生成器，生成所需模拟数据...</div>
-    <el-table v-else :data="rows" border stripe>
+    <el-table v-else :data="rows" border stripe ref="table">
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="col in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
@@ -60,7 +60,7 @@
 import { CloseBold } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { nanoid } from "nanoid";
-import { reactive } from 'vue';
+import { getCurrentInstance, onUpdated, reactive } from 'vue';
 import { getData, refreshTable, downTable } from '../apis';
 import bus from '../plugins/bus';
 
@@ -201,6 +201,13 @@ function downData() {
         }, 1000)
     })
 }
+
+// !!! 防止动态删除列时的抖动 !!!
+onUpdated(() => {
+    if (columns.length > 0) {
+        getCurrentInstance().proxy.$refs.table.doLayout()
+    }
+})
 </script>
 
 <style lang="less">
