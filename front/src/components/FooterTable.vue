@@ -35,7 +35,14 @@
     </el-row>
 
     <div class="prompt" v-if="columns.length == 0">请点击上方生成器，生成所需模拟数据...</div>
-    <el-table v-else :data="rows" border stripe ref="table">
+    <el-table
+        v-else
+        :data="rows"
+        border
+        ref="table"
+        :cell-class-name="cellClassName"
+        :header-cell-class-name="headerCellClassName"
+    >
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
@@ -58,7 +65,7 @@
                     <div class="icon" @click="deleteColumn(col)">
                         <close-bold style="width: 1em; height: 1em; margin: 0 10px" />
                     </div>
-                    <!-- <span class="line"></span> -->
+                    <div class="virtual"></div>
                 </div>
             </template>
         </el-table-column>
@@ -69,8 +76,8 @@
 import { CloseBold } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { nanoid } from "nanoid";
-import { getCurrentInstance, onUpdated, reactive, toRaw } from 'vue';
-import { getData, refreshTable, downTable } from '../apis';
+import { getCurrentInstance, onUpdated, reactive } from 'vue';
+import { downTable, getData, refreshTable } from '../apis';
 import bus from '../plugins/bus';
 
 const config = reactive({
@@ -162,7 +169,6 @@ function deleteAll() {
         columns.splice(0)
         rows.splice(0)
     }).catch(() => { })
-
 }
 
 // 刷新和下载表格共用的数据处理
@@ -219,25 +225,22 @@ onUpdated(() => {
 })
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~拖动效果~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-const dragStateInit = {
-    start: -1, // 起始元素的 index
-    end: -1, // 移动鼠标时所覆盖的元素 index
+// 参考: https://www.cnblogs.com/wisewrong/p/8820508.html
+let dragState = reactive({
+    start: -9, // 起始元素的 index
+    end: -9,  // 结束元素的 index
     dragging: false, // 是否正在拖动
-    direction: undefined // 拖动方向
-}
-let dragState = { ...dragStateInit }
+})
 
 // 鼠标按下开始拖动
 function mouseDown(index) {
     dragState.dragging = true
     dragState.start = index
-    // const table = document.getElementsByClassName('el-table__inner-wrapper')[0]
-    // const lines = document.getElementsByClassName('line')
-    // for (let line of lines) {
-    //     line.style.height = table.clientHeight - 1 + 'px'
-    //     line.style.width = line.parentElement.parentElement.clientWidth + 'px'
-    // }
-
+    const table = document.getElementsByClassName('el-table__inner-wrapper')[0]
+    const virtual = document.getElementsByClassName('virtual')
+    for (let item of virtual) {
+        item.style.height = table.clientHeight - 1 + 'px'
+    }
     document.addEventListener('mouseup', mouseUp)
 }
 
@@ -245,20 +248,40 @@ function mouseDown(index) {
 function mouseUp() {
     const { start, end } = dragState
     if (start >= 0 && end >= 0 && start != end) {
-        console.log(`起始: ${start}, 结束: ${end}`)
         const tmp = columns.splice(start, 1) // tmp是一个代理对象 Proxy, 因此序列化一下
         const arr = JSON.parse(JSON.stringify(tmp))
         columns.splice(end, 0, ...arr)
     }
-    dragState = { ...dragStateInit }
+
+    // 恢复初始状态
+    dragState.start = -9
+    dragState.end = -9
+    dragState.dragging = false
     document.removeEventListener('mouseup', mouseUp)
 }
 
-// 拖动中, 一直记录着最后的索引位置
+// 拖动中, 一直记录着最后的索引位置(并不是抬起的时候再记录最后位置的)
 function mouseMove(index) {
     if (dragState.dragging) {
         dragState.end = index
     }
+}
+
+function headerCellClassName({ columnIndex }) {
+    if (!dragState.dragging) return ''
+    let active = ''
+    if (dragState.start < dragState.end) {
+        active = columnIndex - 2 === dragState.end ? 'drag_active' : ''
+    } else if (dragState.start > dragState.end) {
+        active = columnIndex - 1 === dragState.end ? 'drag_active' : ''
+    }
+    let start = columnIndex - 1 === dragState.start ? 'drag_start' : ''
+    return `${active} ${start}`
+}
+
+function cellClassName({ columnIndex }) {
+    if (!dragState.dragging) return ''
+    return (columnIndex - 1 === dragState.start ? 'drag_start' : '')
 }
 
 </script>
@@ -307,6 +330,11 @@ function mouseMove(index) {
         height: 40px;
         line-height: 40px;
 
+        &:hover {
+            cursor: move;
+            background-color: #f5f7fa;
+        }
+
         // 列名占据左侧部分, 且弹性增长
         .name {
             margin-right: auto;
@@ -317,16 +345,11 @@ function mouseMove(index) {
         .icon {
             font-size: 20px;
             padding-top: 3px;
-        }
 
-        .name:hover {
-            background-color: #bfa;
-            cursor: move;
-        }
-
-        .icon:hover {
-            background-color: #bfa;
-            cursor: pointer;
+            &:hover {
+                cursor: pointer;
+                color: red;
+            }
         }
     }
 }
@@ -345,5 +368,22 @@ function mouseMove(index) {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+}
+
+// 拖拽的样式
+.drag_start {
+    background-color: #bfa !important;
+}
+
+// 拖拽线默认无边框
+.virtual {
+    position: fixed;
+    border: none;
+}
+
+// 激活时显示边框
+.drag_active .virtual {
+    border-left: 2px dotted red !important;
+    z-index: 99;
 }
 </style>
