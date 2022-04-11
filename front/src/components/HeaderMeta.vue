@@ -57,8 +57,8 @@
                     </el-form-item>
                 </el-col>
 
-                <el-button type="primary" @click="saveForm"  :disabled="meta.isModified === undefined">保存</el-button>
-                <el-button type="danger"  @click="resetForm" :disabled="meta.isModified === undefined">重置</el-button>
+                <el-button type="primary" @click="saveForm(meta)"  :disabled="meta.isModified === undefined">保存</el-button>
+                <el-button type="danger"  @click="resetForm"       :disabled="meta.isModified === undefined">重置</el-button>
             </el-row>
         </el-form>
     </Card>
@@ -90,8 +90,9 @@ bus.on('hoverGen', gen => {
 })
 
 function saveForm(meta){
-    console.log('保存', meta)
+    bus.emit('updateMeta', meta)
 }
+
 function resetForm(){
     meta.value = {...bakMeta}
 }

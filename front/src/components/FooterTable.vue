@@ -17,16 +17,19 @@
                 <el-form-item label="文件名称" for="fileName">
                     <el-input id="fileName" v-model="config.fileName" />
                 </el-form-item>
-                <el-form-item label="格式">
+                <el-form-item label="格式" style="width: 160px;">
                     <el-select v-model="config.fileFormat">
-                        <el-option value="Excel"></el-option>
-                        <el-option value="SQL"></el-option>
-                        <el-option value="CSV"></el-option>
-                        <el-option value="TSV"></el-option>
+                        <el-option label="Excel" value="excel" />
+                        <el-option label="SQL" value="sql" />
+                        <el-option label="CSV" value="csv" />
+                        <el-option label="TSV" value="tsv" />
                     </el-select>
                 </el-form-item>
 
-                <el-button type="primary" @click="downData">下载</el-button>
+                <el-button type="primary" @click="downData" style="width: 80px;">
+                    <span>下载</span>
+                    <span v-if="config.timerCount > 0">({{ config.timerCount }})</span>
+                </el-button>
             </el-form>
         </div>
     </el-row>
@@ -38,18 +41,18 @@
         stripe
         empty-text="请点击上方生成器，生成所需模拟数据..."
     >
-        <el-table-column type="index" label="#" align="center" fixed="left"/>
-        <el-table-column v-for="gen in columns" :prop="gen.key" :label="gen.columnTitle">
+        <el-table-column type="index" label="#" align="center" fixed="left" />
+        <el-table-column v-for="col in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
-                <span :style="{ color: gen.color }">{{ scope.row[gen.key] }}</span>
+                <span :style="{ color: col.color }">{{ scope.row[col.key] }}</span>
             </template>
 
             <template #header>
                 <div class="title">
-                    <div class="name">
-                        <span :style="{ color: gen.color, marginLeft: '10px' }">{{ gen.columnTitle }}</span>
+                    <div class="name" @mouseenter="hoverColumn(col)">
+                        <span :style="{ color: col.color, marginLeft: '10px' }">{{ col.label }}</span>
                     </div>
-                    <div class="icon">
+                    <div class="icon" @click="deleteColumn(col)">
                         <close-bold style="width: 1em; height: 1em; margin: 0 10px" />
                     </div>
                 </div>
@@ -60,21 +63,23 @@
 
 <script setup>
 import { CloseBold } from '@element-plus/icons-vue';
+import { ElMessage } from 'element-plus';
 import { nanoid } from "nanoid";
 import { reactive } from 'vue';
+import { getData, refreshTable, downTable } from '../apis';
 import bus from '../plugins/bus';
 
 const config = reactive({
     sampleSize: 100,
     fileName: '测试表',
-    fileFormat: 'Excel',
-    processing: false,
-    processingNumber: 0,
+    fileFormat: 'excel',
+    timerCount: 0,
     rowCount: 10
 })
 const columns = reactive([])
 const rows = reactive([])
 
+// 添加列
 bus.on('addColumn', gen => {
     const key = nanoid()
 
@@ -90,23 +95,117 @@ bus.on('addColumn', gen => {
 
     columns.push({
         key,
-        columnTitle: gen.columnTitle,
-        color: gen.color
+        label: gen.columnTitle,
+        color: gen.color,
+        meta: { ...gen, isModified: true, columnKey: key },
     })
 })
 
-function refreshData() {
-    console.log('refreshData')
+// 删除列
+function deleteColumn(col) {
+    const key = col.key
+    for (let i = 0; i < columns.length; i++) {
+        const col = columns[i];
+        if (col.key == key) {
+            columns.splice(i, 1)
+            break
+        }
+    }
+    rows.forEach(r => delete r[key])
+    return false
 }
 
+// 鼠标划过列标题
+function hoverColumn(col) {
+    bus.emit('hoverGen', col.meta)
+    return false
+}
+
+// 详细配置后, 保存更新列数据
+bus.on('updateMeta', meta => {
+    const params = { sampleSize: 10, ...meta }
+
+    getData(params).then(data => {
+        const key = meta.columnKey
+        columns.forEach(c => {
+            if (c.key != meta.columnKey) return
+            c.meta = meta
+            c.label = meta.columnTitle
+        })
+
+        for (let i = 0; i < config.rowCount; i++) {
+            rows[i][key] = data[i]
+        }
+
+        ElMessage({
+            message: '保存并获取数据成功',
+            type: 'success',
+        })
+    })
+})
+
+// 删除所有列
 function deleteAll() {
-    console.log('deleteAll')
+    ElMessageBox.confirm(
+        '确认删除全部列吗？',
+        '系统提示',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    ).then(() => {
+        columns.splice(0)
+        rows.splice(0)
+    }).catch(() => { })
+
 }
 
+// 刷新和下载表格共用的数据处理
+function getMetaList() {
+    return columns.map(c => {
+        let m = { ...c.meta }
+        delete m.sampleData // 减少参数的体积
+        return m
+    })
+}
+
+// 刷新表格数据
+function refreshData() {
+    refreshTable({
+        metaList: getMetaList(),
+        sampleSize: 10
+    }).then(data => {
+        for (let i = 0; i < config.rowCount; i++) {
+            rows[i] = data[i];
+        }
+
+        ElMessage({
+            message: '刷新成功',
+            type: 'success',
+        })
+    })
+}
+
+// 下载数据
 function downData() {
-    console.log('downData')
-}
+    const params = {
+        sampleSize: config.sampleSize,
+        fileName: config.fileName,
+        fileFormat: config.fileFormat,
+        metaList: getMetaList()
+    }
 
+    config.timerCount = 5
+    downTable(params).then(res => {
+        let timer = setInterval(() => {
+            config.timerCount--
+            if (config.timerCount <= 0) {
+                clearInterval(timer)
+            }
+        }, 1000)
+    })
+}
 </script>
 
 <style lang="less">
@@ -128,15 +227,16 @@ function downData() {
     width: 220px;
 }
 
-.el-form-item:nth-child(3) {
-    width: 160px;
-}
-
 // 默认没有数据时显示文字样式
 .el-table__empty-text {
     font-size: 18px;
     font-style: italic;
     padding-top: 100px;
+}
+
+// 表格的默认颜色改为黑色 ==> 序号列显示为黑色
+.cell {
+    color: black;
 }
 
 // 表格标题
