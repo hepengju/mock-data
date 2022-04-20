@@ -34,14 +34,15 @@
         <div class="hint">请点击上方生成器，生成所需模拟数据...</div>
         <div class="history" v-show="tables.length > 0">
             <div>
-                <div>历史记录</div>
-                <a href="#" @click="clearHis">清空</a>
+                <el-tooltip content="点击此处清空历史记录，点击下面列表打开对应表格" placement="top-start">
+                    <div @click="clearHis">历史记录</div>
+                </el-tooltip>
             </div>
             <ul>
                 <li v-for="(tab, index) in tables" :key="index">
-                    <a href="#" @click="openHis(tab)">
+                    <span @click="openHis(tab)">
                         {{ index + 1 }}. {{ tab.name }}：{{ tab.hint }}
-                    </a>
+                    </span>
                     <el-icon @click="deleteHis(index)">
                         <close />
                     </el-icon>
@@ -233,6 +234,9 @@ function downData() {
                 clearInterval(timer)
             }
         }, 1000)
+
+        // 下载成功后, 保存到历史记录
+        saveHis()
     })
 }
 
@@ -343,7 +347,7 @@ function saveHis() {
         columns,
     })
 
-    if (tables.length > 9) {
+    if (tables.length >= 9) {
         tables.pop()
     }
 
@@ -408,14 +412,6 @@ function deleteHis(index) {
     width: 220px;
 }
 
-// 默认没有数据时显示文字样式
-.hint {
-    text-align: center;
-    font-size: 20px;
-    font-style: italic;
-    padding-top: 100px;
-}
-
 // 表格的默认颜色改为黑色 ==> 序号列显示为黑色
 .cell {
     color: black;
@@ -444,12 +440,10 @@ thead {
         // 列名占据左侧部分, 且弹性增长
         .name {
             flex-grow: 1;
-            //background-color: #bfa;
         }
 
         // 图标显示合适大小并肉眼调整居中
         .icon {
-            //background-color: blue;
             font-size: 20px;
             padding-top: 3px;
 
@@ -496,14 +490,18 @@ thead {
 }
 
 //~~~~~~~~~~~~~~历史记录~~~~~~~~~~~~~~
+// 默认没有数据时显示文字样式
+.hint {
+    font-size: 20px;
+    font-style: italic;
+    text-align: center;
+    margin-top: 100px;
+}
+
 .history {
     position: absolute;
     bottom: 20px;
     margin: 0 20px;
-
-    a {
-        text-decoration: none;
-    }
 
     &>div {
         display: flex;
@@ -511,19 +509,26 @@ thead {
 
         &>div {
             font-weight: bold;
-            color: red;
-        }
+            margin-right: 20px;
+            cursor: pointer;
 
-        &>a {
-            margin-left: 20px;
+            &:hover {
+                color: red;
+            }
         }
     }
 
     li {
         font-size: 14px;
+        margin-top: 5px;
+        cursor: pointer;
+
+        span:hover {
+            color: red;
+        }
 
         .el-icon {
-            padding-top: 3px;
+            transform: translateY(10%);
             margin-left: 10px;
 
             &:hover {
