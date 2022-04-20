@@ -52,8 +52,8 @@
             </el-form-item>
 
             <el-form-item label="枚举" for="code">
-                <el-input :input-style="{ color: meta.color }" id="code" v-model="meta.code" :disabled="meta.code == null"
-                    clearable />
+                <el-input :input-style="{ color: meta.color }" id="code" v-model="meta.code"
+                    :disabled="meta.code == null" clearable />
             </el-form-item>
 
             <el-row>
@@ -63,7 +63,7 @@
                     </el-form-item>
                 </el-col>
 
-                <el-button type="primary" @click="saveForm(meta)" :disabled="meta.isModified === undefined">保存
+                <el-button type="primary" @click="confirmForm(meta)" :disabled="meta.isModified === undefined">确定
                 </el-button>
                 <el-button type="danger" @click="resetForm" :disabled="meta.isModified === undefined">重置</el-button>
             </el-row>
@@ -97,7 +97,7 @@ bus.on('hoverGen', gen => {
     meta.value = { ...gen }
 })
 
-function saveForm(meta) {
+function confirmForm(meta) {
     bus.emit('updateMeta', { ...meta })
 }
 

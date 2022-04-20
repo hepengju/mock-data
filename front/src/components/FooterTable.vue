@@ -1,8 +1,9 @@
 <template>
     <el-row v-show="columns.length > 0" class="btn-line">
         <div class="btn">
-            <el-button type="primary" @click="refreshData">刷新数据</el-button>
-            <el-button type="danger" @click="deleteAll">删除所有</el-button>
+            <el-button type="primary" @click="refreshData">刷新</el-button>
+            <el-button type="danger" @click="deleteAll">清空</el-button>
+            <el-button type="info" @click="saveTable">保存</el-button>
         </div>
         <div class="config">
             <el-form ref="formRef" :model="config" label-width="70px" :inline="true">
@@ -29,9 +30,9 @@
         </div>
     </el-row>
 
-    <div class="prompt" v-if="columns.length == 0">请点击上方生成器，生成所需模拟数据...</div>
-    <el-table v-else :data="rows" border ref="table" table-layout="auto" :cell-class-name="cellClassName"
-        :header-cell-class-name="headerCellClassName">
+    <div class="prompt" v-show="columns.length == 0">请点击上方生成器，生成所需模拟数据...</div>
+    <el-table v-show="columns.length > 0" :data="data" border ref="table" table-layout="auto"
+        :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName">
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
@@ -58,7 +59,7 @@
 import { CloseBold } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { nanoid } from "nanoid";
-import { getCurrentInstance, onUnmounted, onUpdated, reactive } from 'vue';
+import { computed, getCurrentInstance, onUnmounted, onUpdated, reactive } from 'vue';
 import { downTable, getData, refreshTable } from '../apis';
 import bus from '../plugins/bus';
 
@@ -70,7 +71,25 @@ const config = reactive({
     rowCount: 10
 })
 const columns = reactive([])
-const rows = reactive([])
+
+// 行数据, 可以由列数据计算出来(因为列上面已经保存了生成器的样例数据)
+const data = computed(() => {
+    const rows = []
+    if (columns.length == 0) return rows
+
+    for (let i = 0; i < config.rowCount; i++) {
+        const row = {}
+        for (let j = 0; j < columns.length; j++) {
+            const col = columns[j]
+            row[col.key] = col.meta.sampleData[i]
+
+        }
+        rows.push(row)
+    }
+
+    return rows
+})
+
 
 // 删除列
 function deleteColumn(col) {
@@ -82,7 +101,6 @@ function deleteColumn(col) {
             break
         }
     }
-    rows.forEach(r => delete r[key])
     return false
 }
 
@@ -98,16 +116,6 @@ function hoverColumn(col) {
 // 添加列
 bus.on('addColumn', gen => {
     const key = nanoid()
-
-    if (rows.length == 0) {
-        for (let i = 0; i < config.rowCount; i++) {
-            rows.push({})
-        }
-    }
-
-    for (let i = 0; i < config.rowCount; i++) {
-        rows[i][key] = gen.sampleData[i]
-    }
 
     columns.push({
         key,
@@ -127,14 +135,11 @@ bus.on('updateMeta', meta => {
     delete params.isModified
 
     getData(params).then(data => {
-        const key = meta.columnKey
-
         const col = columns.filter(c => c.key == meta.columnKey)
         col.label = meta.columnTitle
         col.meta = meta
 
         for (let i = 0; i < config.rowCount; i++) {
-            rows[i][key] = data[i]
             col.meta.sampleData[i] = data[i]
         }
 
@@ -144,6 +149,27 @@ bus.on('updateMeta', meta => {
         })
     })
 })
+
+// 刷新表格数据
+function refreshData() {
+    refreshTable({
+        metaList: getMetaList(),
+        sampleSize: 10
+    }).then(data => {
+
+        for (let i = 0; i < config.rowCount; i++) {
+            for (let j = 0; j < columns.length; j++) {
+                const col = columns[j];
+                col.meta.sampleData[i] = data[i][col.key]
+            }
+        }
+
+        ElMessage({
+            message: '刷新成功',
+            type: 'success',
+        })
+    })
+}
 
 // 删除所有列
 function deleteAll() {
@@ -157,8 +183,13 @@ function deleteAll() {
         }
     ).then(() => {
         columns.splice(0)
-        rows.splice(0)
     }).catch(() => { })
+}
+
+// 保存表格
+function saveTable() {
+    const localData = localStorage.getItem('localData') || []
+    localData.push()
 }
 
 // 刷新和下载表格共用的数据处理
@@ -170,22 +201,7 @@ function getMetaList() {
     })
 }
 
-// 刷新表格数据
-function refreshData() {
-    refreshTable({
-        metaList: getMetaList(),
-        sampleSize: 10
-    }).then(data => {
-        for (let i = 0; i < config.rowCount; i++) {
-            rows[i] = data[i];
-        }
 
-        ElMessage({
-            message: '刷新成功',
-            type: 'success',
-        })
-    })
-}
 
 // 下载数据
 function downData() {
