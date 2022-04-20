@@ -31,7 +31,7 @@ import java.util.List;
  *      （2）计算模 Y = mod(S, 11)
  *      （3）通过模得到对应的校验码 Y: 0 1 2 3 4 5 6 7 8 9 10 校验码: 1 0 X 9 8 7 6 5 4 3 2
  */
-@Data @ApiModel("身份证号") @Order(451)
+@Data @ApiModel("身份证号") @Order(451 - 10000)
 public class IdentityCardGenerator extends AbstractStringGenerator {
 
 	private String min = "1900-01-01";
@@ -48,10 +48,10 @@ public class IdentityCardGenerator extends AbstractStringGenerator {
 	public String generate() {
 		StringBuffer result = new StringBuffer(18);
 		result.append(RandomUtil.randomOne(areas))                                                                           //地区:前两位
-		      .append(StringUtils.leftPad(RandomUtils.nextInt(0, 9999) + "", 4, '0'))                     //地区:后四位
+		      .append(StringUtils.leftPad(RandomUtils.nextInt(0, 9999 + 1) + "", 4, '0'))                     //地区:后四位
 		      .append(new SimpleDateFormat("yyyyMMdd").format(RandomUtil
 					  .randomDate(minDate.getTime(), maxDate.getTime())))  //出生日期
-		      .append(StringUtils.leftPad(RandomUtils.nextInt(0, 999) + "", 3, '0'))                      //顺序码
+		      .append(StringUtils.leftPad(RandomUtils.nextInt(0, 999 + 1) + "", 3, '0'))                      //顺序码
 		      ;
 		String verifyCode = getVerifyCode(result.toString());                                                                 //验证码
 		return result.append(verifyCode).toString();

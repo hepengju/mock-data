@@ -9,7 +9,7 @@ import org.springframework.core.annotation.Order;
 
 import static com.hepengju.mockdata.common.DataConst.words;
 
-@ApiModel("中国地址生成器") @Order(461)
+@ApiModel("中国地址生成器") @Order(461 - 10000)
 public class ChinaAddressGenerator extends AbstractStringGenerator {
 
 	@Override
