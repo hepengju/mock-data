@@ -1,5 +1,6 @@
 package com.hepengju.mockdata.util;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -12,6 +13,7 @@ import java.util.Set;
 /**
  * BeanUtil
  *
+ * <br> 注意 commons.beanutils.BeanUtils 设置属性时会调用set方法, hutool的不会, 因此恢复
  * @author hepengju
  */
 public class BeanUtil {
@@ -21,8 +23,8 @@ public class BeanUtil {
      */
     public static String getProperty(final Object bean, final String name) {
         try {
-            return cn.hutool.core.bean.BeanUtil.getProperty(bean, name);
-        } catch (Exception e) {
+            return BeanUtils.getProperty(bean, name);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             return null;
         }
     }
@@ -34,14 +36,14 @@ public class BeanUtil {
         try {
             if (propertyValue instanceof String) {
                 if (StringUtils.isNotBlank((String) propertyValue)) {
-                    cn.hutool.core.bean.BeanUtil.setProperty(obj, propertyName, propertyValue);
+                    org.apache.commons.beanutils.BeanUtils.setProperty(obj, propertyName, propertyValue);
                 }
             } else {
                 if (propertyValue != null) {
-                    cn.hutool.core.bean.BeanUtil.setProperty(obj, propertyName, propertyValue);
+                    org.apache.commons.beanutils.BeanUtils.setProperty(obj, propertyName, propertyValue);
                 }
             }
-        } catch (Exception e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
         }
     }
 
@@ -53,8 +55,8 @@ public class BeanUtil {
         String[] notBlankPropertyNames = getNotBlankPropertyNames(source);
         for (String notBlankPropertyName : notBlankPropertyNames) {
             try {
-                setNotBlankProperty(target, notBlankPropertyName, cn.hutool.core.bean.BeanUtil.getProperty(source, notBlankPropertyName));
-            } catch (Exception e) {
+                setNotBlankProperty(target, notBlankPropertyName, BeanUtils.getSimpleProperty(source, notBlankPropertyName));
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             }
         }
     }
