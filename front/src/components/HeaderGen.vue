@@ -40,4 +40,9 @@ button {
     width: 90px;
     margin: 4px;
 }
+
+// 生成器添加悬浮效果
+button:hover {
+    outline: 1px solid black;
+}
 </style>
