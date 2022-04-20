@@ -52,7 +52,8 @@ getGenMap().then(data => {
     display: flex;
     justify-content: space-evenly;
     overflow: hidden;
-    max-height: 300px;
+    max-height: 350px;
+    margin-right: 20px;
 
     & > div {
         margin: 0 5px;

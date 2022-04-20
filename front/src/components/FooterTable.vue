@@ -1,9 +1,9 @@
 <template>
     <el-row v-show="columns.length > 0" class="btn-line">
         <div class="btn">
-            <el-button type="primary" @click="refreshData">刷新</el-button>
-            <el-button type="danger" @click="deleteAll">清空</el-button>
-            <el-button type="info" @click="saveTable">保存</el-button>
+            <el-button type="primary" @click="refreshData">刷新表格</el-button>
+            <el-button type="danger" @click="deleteAll">清空表格</el-button>
+            <el-button type="info" @click="saveHis">保存表格</el-button>
         </div>
         <div class="config">
             <el-form ref="formRef" :model="config" label-width="70px" :inline="true">
@@ -30,7 +30,26 @@
         </div>
     </el-row>
 
-    <div class="prompt" v-show="columns.length == 0">请点击上方生成器，生成所需模拟数据...</div>
+    <div v-show="columns.length == 0">
+        <div class="hint">请点击上方生成器，生成所需模拟数据...</div>
+        <div class="history" v-show="tables.length > 0">
+            <div>
+                <div>历史记录</div>
+                <a href="#" @click="clearHis">清空</a>
+            </div>
+            <ul>
+                <li v-for="(tab, index) in tables" :key="index">
+                    <a href="#" @click="openHis(tab)">
+                        {{ index + 1 }}. {{ tab.name }}：{{ tab.hint }}
+                    </a>
+                    <el-icon @click="deleteHis(index)">
+                        <close />
+                    </el-icon>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <el-table v-show="columns.length > 0" :data="data" border ref="table" table-layout="auto"
         :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName">
         <el-table-column type="index" label="#" align="center" fixed="left" />
@@ -56,10 +75,11 @@
 </template>
 
 <script setup>
-import { CloseBold } from '@element-plus/icons-vue';
+import { CloseBold, Close } from '@element-plus/icons-vue';
+import dayjs from 'dayjs';
 import { ElMessage } from 'element-plus';
-import { nanoid } from "nanoid";
-import { computed, getCurrentInstance, onUnmounted, onUpdated, reactive } from 'vue';
+import { nanoid } from 'nanoid';
+import { computed, getCurrentInstance, onMounted, onUnmounted, onUpdated, reactive } from 'vue';
 import { downTable, getData, refreshTable } from '../apis';
 import bus from '../plugins/bus';
 
@@ -71,6 +91,7 @@ const config = reactive({
     rowCount: 10
 })
 const columns = reactive([])
+const tables = reactive([])
 
 // 行数据, 可以由列数据计算出来(因为列上面已经保存了生成器的样例数据)
 const data = computed(() => {
@@ -89,7 +110,6 @@ const data = computed(() => {
 
     return rows
 })
-
 
 // 删除列
 function deleteColumn(col) {
@@ -116,7 +136,6 @@ function hoverColumn(col) {
 // 添加列
 bus.on('addColumn', gen => {
     const key = nanoid()
-
     columns.push({
         key,
         label: gen.columnTitle,
@@ -184,12 +203,8 @@ function deleteAll() {
     ).then(() => {
         columns.splice(0)
     }).catch(() => { })
-}
 
-// 保存表格
-function saveTable() {
-    const localData = localStorage.getItem('localData') || []
-    localData.push()
+    initHis()
 }
 
 // 刷新和下载表格共用的数据处理
@@ -200,8 +215,6 @@ function getMetaList() {
         return m
     })
 }
-
-
 
 // 下载数据
 function downData() {
@@ -235,6 +248,8 @@ onUnmounted(() => {
     bus.off('addColumn')
     bus.off('updateMeta')
 })
+
+//#region
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~拖动效果~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // 参考: https://www.cnblogs.com/wisewrong/p/8820508.html
 let dragState = reactive({
@@ -303,7 +318,75 @@ function cellClassName({ columnIndex }) {
     if (!dragState.dragging) return ''
     return (columnIndex - 1 === dragState.start ? 'drag_start' : '')
 }
+//#endregion
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~本地保存~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const ITEM_KEY = 'tables'
+// 挂载恢复表格
+onMounted(() => {
+    initHis()
+})
+
+// 初始化历史记录
+function initHis() {
+    tables.splice(0, tables.length)
+    const arrs = JSON.parse(localStorage.getItem(ITEM_KEY)) || []
+    tables.push(...arrs)
+}
+
+// 保存历史记录
+function saveHis() {
+    tables.unshift({
+        name: config.fileName + dayjs().format('_YYYYMMDD_HHmmss'),
+        hint: columns.map(c => c.label).join('、'),
+        config,
+        columns,
+    })
+
+    if (tables.length > 9) {
+        tables.pop()
+    }
+
+    localStorage.setItem(ITEM_KEY, JSON.stringify(tables))
+    ElMessage({
+        message: '保存成功',
+        type: 'success',
+    })
+}
+
+// 打开某条历史
+function openHis({ config: tabConfig, columns: tabColumns }) {
+    config.sampleSize = tabConfig.sampleData
+    config.fileName = tabConfig.fileName
+    config.fileFormat = tabConfig.fileFormat
+    config.timerCount = 0
+    config.rowCount = 10
+
+    columns.splice(0, columns.length)
+    columns.push(...tabColumns)
+}
+
+// 清空历史记录
+function clearHis() {
+    ElMessageBox.confirm(
+        '确认清空历史记录吗？',
+        '系统提示',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    ).then(() => {
+        tables.splice(0, tables.length)
+        localStorage.setItem(ITEM_KEY, JSON.stringify(tables))
+    }).catch(() => { })
+}
+
+// 删除某一条
+function deleteHis(index) {
+    tables.splice(index, 1)
+    localStorage.setItem(ITEM_KEY, JSON.stringify(tables))
+}
 </script>
 
 <style lang="less">
@@ -326,11 +409,11 @@ function cellClassName({ columnIndex }) {
 }
 
 // 默认没有数据时显示文字样式
-.prompt {
+.hint {
     text-align: center;
-    font-size: 18px;
+    font-size: 20px;
     font-style: italic;
-    padding-top: 200px;
+    padding-top: 100px;
 }
 
 // 表格的默认颜色改为黑色 ==> 序号列显示为黑色
@@ -395,6 +478,7 @@ thead {
     }
 }
 
+//~~~~~~~~~~~~~~拖拽~~~~~~~~~~~~~~
 // 拖拽的样式
 .drag_start {
     background-color: #bfa !important;
@@ -409,5 +493,43 @@ thead {
 // 激活时显示边框
 .drag_active .virtual {
     border-left: 2px dotted red;
+}
+
+//~~~~~~~~~~~~~~历史记录~~~~~~~~~~~~~~
+.history {
+    position: absolute;
+    bottom: 20px;
+    margin: 0 20px;
+
+    a {
+        text-decoration: none;
+    }
+
+    &>div {
+        display: flex;
+        margin-bottom: 10px;
+
+        &>div {
+            font-weight: bold;
+            color: red;
+        }
+
+        &>a {
+            margin-left: 20px;
+        }
+    }
+
+    li {
+        font-size: 14px;
+
+        .el-icon {
+            margin-top: 2px;
+            margin-left: 10px;
+
+            &:hover {
+                color: red;
+            }
+        }
+    }
 }
 </style>
