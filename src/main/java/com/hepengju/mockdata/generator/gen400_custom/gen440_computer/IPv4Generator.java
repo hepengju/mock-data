@@ -18,13 +18,13 @@ public class IPv4Generator extends AbstractStringGenerator {
 	public String generate() {
 		StringBuilder sb = new StringBuilder();
 		
-		sb.append(RandomUtils.nextInt(0, 255))
+		sb.append(RandomUtils.nextInt(0, 256))
 		  .append(".")
-		  .append(RandomUtils.nextInt(0, 255))
+		  .append(RandomUtils.nextInt(0, 256))
 		  .append(".")
-		  .append(RandomUtils.nextInt(0, 255))
+		  .append(RandomUtils.nextInt(0, 256))
 		  .append(".")
-		  .append(RandomUtils.nextInt(0, 255));
+		  .append(RandomUtils.nextInt(0, 256));
 		
 		return sb.toString();
 	}

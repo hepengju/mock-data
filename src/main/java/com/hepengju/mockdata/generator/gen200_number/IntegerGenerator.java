@@ -17,6 +17,6 @@ public class IntegerGenerator extends AbstractNumberGenerator<Integer> {
 
 	@Override
 	public Integer generate() {
-		return RandomUtils.nextInt(min, max);
+		return RandomUtils.nextInt(min, max + 1);
 	}
 }
