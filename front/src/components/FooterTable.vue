@@ -523,7 +523,7 @@ thead {
         font-size: 14px;
 
         .el-icon {
-            margin-top: 2px;
+            padding-top: 3px;
             margin-left: 10px;
 
             &:hover {
