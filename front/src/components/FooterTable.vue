@@ -40,6 +40,7 @@
         :data="rows"
         border
         ref="table"
+        table-layout="auto"
         :cell-class-name="cellClassName"
         :header-cell-class-name="headerCellClassName"
     >
@@ -319,7 +320,8 @@ function cellClassName({ columnIndex }) {
 }
 
 // 表格标题
-.el-table__header-wrapper {
+// .el-table__header-wrapper {
+thead {
     .el-table__cell,
     .cell {
         padding: 0 !important;
@@ -337,12 +339,13 @@ function cellClassName({ columnIndex }) {
 
         // 列名占据左侧部分, 且弹性增长
         .name {
-            margin-right: auto;
             flex-grow: 1;
+            //background-color: #bfa;
         }
 
         // 图标显示合适大小并肉眼调整居中
         .icon {
+            //background-color: blue;
             font-size: 20px;
             padding-top: 3px;
 
