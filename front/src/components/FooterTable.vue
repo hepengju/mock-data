@@ -7,12 +7,7 @@
         <div class="config">
             <el-form ref="formRef" :model="config" label-width="70px" :inline="true">
                 <el-form-item label="下载行数">
-                    <el-input-number
-                        v-model="config.sampleSize"
-                        :min="10"
-                        :max="100000"
-                        :step="100"
-                    />
+                    <el-input-number v-model="config.sampleSize" :min="10" :max="100000" :step="100" />
                 </el-form-item>
                 <el-form-item label="文件名称" for="fileName">
                     <el-input id="fileName" v-model="config.fileName" />
@@ -35,32 +30,18 @@
     </el-row>
 
     <div class="prompt" v-if="columns.length == 0">请点击上方生成器，生成所需模拟数据...</div>
-    <el-table
-        v-else
-        :data="rows"
-        border
-        ref="table"
-        table-layout="auto"
-        :cell-class-name="cellClassName"
-        :header-cell-class-name="headerCellClassName"
-    >
+    <el-table v-else :data="rows" border ref="table" table-layout="auto" :cell-class-name="cellClassName"
+        :header-cell-class-name="headerCellClassName">
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
-                <span
-                    :style="{ color: col.color }"
-                    @mousemove="mouseMove(index)"
-                >{{ scope.row[col.key] }}</span>
+                <span :style="{ color: col.color }" @mousemove="mouseMove(index)">{{ scope.row[col.key] }}</span>
             </template>
 
             <template #header>
                 <div class="title">
-                    <div
-                        class="name"
-                        @mouseenter="hoverColumn(col)"
-                        @mousemove="mouseMove(index)"
-                        @mousedown="mouseDown(index)"
-                    >
+                    <div class="name" @mouseenter="hoverColumn(col)" @mousemove="mouseMove(index)"
+                        @mousedown="mouseDown(index)">
                         <span :style="{ color: col.color, marginLeft: '10px' }">{{ col.label }}</span>
                     </div>
                     <div class="icon" @click="deleteColumn(col)">
@@ -129,6 +110,9 @@ function deleteColumn(col) {
 
 // 鼠标划过列标题
 function hoverColumn(col) {
+    // 20220420 拖拽中不触发
+    if (dragState.dragging) return false
+
     bus.emit('hoverGen', col.meta)
     return false
 }
@@ -231,17 +215,23 @@ let dragState = reactive({
     start: -9, // 起始元素的 index
     end: -9,  // 结束元素的 index
     dragging: false, // 是否正在拖动
+
+    hoverColor: null // 拖动时选中行会遮挡掉虚线, 因此处理下
 })
 
 // 鼠标按下开始拖动
 function mouseDown(index) {
     dragState.dragging = true
     dragState.start = index
-    const table = document.getElementsByClassName('el-table__inner-wrapper')[0]
+    const table = document.getElementsByClassName('el-table')[0]
     const virtual = document.getElementsByClassName('virtual')
     for (let item of virtual) {
         item.style.height = table.clientHeight - 1 + 'px'
     }
+
+    // 20220420 避免拖动时同时hover行, 引起的虚线被遮住一部分
+    dragState.hoverColor = getComputedStyle(table).getPropertyValue('--el-table-row-hover-bg-color')
+    table.style.setProperty('--el-table-row-hover-bg-color','transparent')
     document.addEventListener('mouseup', mouseUp)
 }
 
@@ -258,6 +248,9 @@ function mouseUp() {
     dragState.start = -9
     dragState.end = -9
     dragState.dragging = false
+
+    const table = document.getElementsByClassName('el-table')[0]
+    table.style.setProperty('--el-table-row-hover-bg-color', dragState.hoverColor)
     document.removeEventListener('mouseup', mouseUp)
 }
 
@@ -320,8 +313,9 @@ function cellClassName({ columnIndex }) {
 }
 
 // 表格标题
-// .el-table__header-wrapper {
-thead {
+// .el-table__header-wrapper { ==> table-layout为fixed时是这样的
+thead { // ==> table-layout为auto时是这样的
+
     .el-table__cell,
     .cell {
         padding: 0 !important;
@@ -334,7 +328,7 @@ thead {
 
         &:hover {
             cursor: move;
-            background-color: #f5f7fa;
+            background-color: var(--el-fill-color-light); // 参考: --el-table-row-hover-bg-color
         }
 
         // 列名占据左侧部分, 且弹性增长
@@ -359,6 +353,7 @@ thead {
 
 // 表格数据
 .el-table__body-wrapper {
+
     // 减少行高
     .el-table__cell {
         padding: 5px 0;
@@ -386,7 +381,6 @@ thead {
 
 // 激活时显示边框
 .drag_active .virtual {
-    border-left: 2px dotted red !important;
-    z-index: 99;
+    border-left: 2px dotted red;
 }
 </style>
