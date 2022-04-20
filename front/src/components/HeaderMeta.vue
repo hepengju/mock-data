@@ -4,12 +4,14 @@
             <el-row>
                 <el-col :span="12">
                     <el-form-item label="标题" for="columnTitle">
-                        <el-input :input-style="{color: meta.color}" id="columnTitle" v-model="meta.columnTitle" clearable/>
+                        <el-input :input-style="{ color: meta.color }" id="columnTitle" v-model="meta.columnTitle"
+                            clearable />
                     </el-form-item>
                 </el-col>
                 <el-col :span="12">
                     <el-form-item label="名称" for="columnName">
-                        <el-input :input-style="{color: meta.color}" id="columnName" v-model="meta.columnName" disabled/>
+                        <el-input :input-style="{ color: meta.color }" id="columnName" v-model="meta.columnName"
+                            disabled />
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -17,13 +19,15 @@
             <el-row>
                 <el-col :span="12">
                     <el-form-item label="最小" for="min">
-                        <el-input :input-style="{color: meta.color}" id="min" v-model="meta.min" :disabled="meta.min == null" clearable/>
+                        <el-input :input-style="{ color: meta.color }" id="min" v-model="meta.min"
+                            :disabled="meta.min == null" clearable />
                     </el-form-item>
                 </el-col>
 
                 <el-col :span="12">
                     <el-form-item label="最大" for="max">
-                        <el-input :input-style="{color: meta.color}" id="max" v-model="meta.max" :disabled="meta.max == null" clearable/>
+                        <el-input :input-style="{ color: meta.color }" id="max" v-model="meta.max"
+                            :disabled="meta.max == null" clearable />
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -31,34 +35,37 @@
             <el-row>
                 <el-col :span="12">
                     <el-form-item label="前缀" for="prefix">
-                        <el-input :input-style="{color: meta.color}" id="prefix" v-model="meta.prefix" clearable/>
+                        <el-input :input-style="{ color: meta.color }" id="prefix" v-model="meta.prefix" clearable />
                     </el-form-item>
                 </el-col>
 
                 <el-col :span="12">
                     <el-form-item label="后缀" for="suffix">
-                        <el-input :input-style="{color: meta.color}" id="suffix" v-model="meta.suffix" clearable/>
+                        <el-input :input-style="{ color: meta.color }" id="suffix" v-model="meta.suffix" clearable />
                     </el-form-item>
                 </el-col>
             </el-row>
 
             <el-form-item label="格式" for="format">
-                <el-input :input-style="{color: meta.color}" id="format" v-model="meta.format" :disabled="meta.format == null" clearable/>
+                <el-input :input-style="{ color: meta.color }" id="format" v-model="meta.format"
+                    :disabled="meta.format == null" clearable />
             </el-form-item>
 
             <el-form-item label="枚举" for="code">
-                <el-input :input-style="{color: meta.color}" id="code" v-model="meta.code" :disabled="meta.code == null" clearable/>
+                <el-input :input-style="{ color: meta.color }" id="code" v-model="meta.code" :disabled="meta.code == null"
+                    clearable />
             </el-form-item>
 
             <el-row>
                 <el-col :span="10">
                     <el-form-item label="多选">
-                        <el-switch v-model="meta.codeMulti" :disabled="meta.code == null"/>
+                        <el-switch v-model="meta.codeMulti" :disabled="meta.code == null" />
                     </el-form-item>
                 </el-col>
 
-                <el-button type="primary" @click="saveForm(meta)"  :disabled="meta.isModified === undefined">保存</el-button>
-                <el-button type="danger"  @click="resetForm"       :disabled="meta.isModified === undefined">重置</el-button>
+                <el-button type="primary" @click="saveForm(meta)" :disabled="meta.isModified === undefined">保存
+                </el-button>
+                <el-button type="danger" @click="resetForm" :disabled="meta.isModified === undefined">重置</el-button>
             </el-row>
         </el-form>
     </Card>
@@ -83,18 +90,19 @@ let meta = ref({
     color: '#fff'
 })
 
+// 此处的备份和保存, 都采用复制1份的操作
 let bakMeta = {}
 bus.on('hoverGen', gen => {
-    bakMeta = { ...gen, sampleData: null }
-    meta.value = {...bakMeta}
+    bakMeta = { ...gen }
+    meta.value = { ...gen }
 })
 
-function saveForm(meta){
-    bus.emit('updateMeta', meta)
+function saveForm(meta) {
+    bus.emit('updateMeta', { ...meta })
 }
 
-function resetForm(){
-    meta.value = {...bakMeta}
+function resetForm() {
+    meta.value = { ...bakMeta }
 }
 
 </script>

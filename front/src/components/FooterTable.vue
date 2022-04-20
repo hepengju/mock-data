@@ -58,7 +58,7 @@
 import { CloseBold } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { nanoid } from "nanoid";
-import { getCurrentInstance, onUpdated, reactive } from 'vue';
+import { getCurrentInstance, onUnmounted, onUpdated, reactive } from 'vue';
 import { downTable, getData, refreshTable } from '../apis';
 import bus from '../plugins/bus';
 
@@ -71,28 +71,6 @@ const config = reactive({
 })
 const columns = reactive([])
 const rows = reactive([])
-
-// 添加列
-bus.on('addColumn', gen => {
-    const key = nanoid()
-
-    if (rows.length == 0) {
-        for (let i = 0; i < config.rowCount; i++) {
-            rows.push({})
-        }
-    }
-
-    for (let i = 0; i < config.rowCount; i++) {
-        rows[i][key] = gen.sampleData[i]
-    }
-
-    columns.push({
-        key,
-        label: gen.columnTitle,
-        color: gen.color,
-        meta: { ...gen, isModified: true, columnKey: key },
-    })
-})
 
 // 删除列
 function deleteColumn(col) {
@@ -117,20 +95,47 @@ function hoverColumn(col) {
     return false
 }
 
+// 添加列
+bus.on('addColumn', gen => {
+    const key = nanoid()
+
+    if (rows.length == 0) {
+        for (let i = 0; i < config.rowCount; i++) {
+            rows.push({})
+        }
+    }
+
+    for (let i = 0; i < config.rowCount; i++) {
+        rows[i][key] = gen.sampleData[i]
+    }
+
+    columns.push({
+        key,
+        label: gen.columnTitle,
+        color: gen.color,
+        meta: { ...gen, isModified: true, columnKey: key },
+    })
+})
+
 // 详细配置后, 保存更新列数据
 bus.on('updateMeta', meta => {
     const params = { sampleSize: 10, ...meta }
 
+    // 发送请求前删除多余数据
+    delete params.sampleData
+    delete params.color
+    delete params.isModified
+
     getData(params).then(data => {
         const key = meta.columnKey
-        columns.forEach(c => {
-            if (c.key != meta.columnKey) return
-            c.meta = meta
-            c.label = meta.columnTitle
-        })
+
+        const col = columns.filter(c => c.key == meta.columnKey)
+        col.label = meta.columnTitle
+        col.meta = meta
 
         for (let i = 0; i < config.rowCount; i++) {
             rows[i][key] = data[i]
+            col.meta.sampleData[i] = data[i]
         }
 
         ElMessage({
@@ -209,6 +214,11 @@ onUpdated(() => {
     }
 })
 
+// 卸载时去掉事件监听
+onUnmounted(() => {
+    bus.off('addColumn')
+    bus.off('updateMeta')
+})
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~拖动效果~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // 参考: https://www.cnblogs.com/wisewrong/p/8820508.html
 let dragState = reactive({
@@ -231,7 +241,7 @@ function mouseDown(index) {
 
     // 20220420 避免拖动时同时hover行, 引起的虚线被遮住一部分
     dragState.hoverColor = getComputedStyle(table).getPropertyValue('--el-table-row-hover-bg-color')
-    table.style.setProperty('--el-table-row-hover-bg-color','transparent')
+    table.style.setProperty('--el-table-row-hover-bg-color', 'transparent')
     document.addEventListener('mouseup', mouseUp)
 }
 
@@ -314,7 +324,8 @@ function cellClassName({ columnIndex }) {
 
 // 表格标题
 // .el-table__header-wrapper { ==> table-layout为fixed时是这样的
-thead { // ==> table-layout为auto时是这样的
+thead {
+    // ==> table-layout为auto时是这样的
 
     .el-table__cell,
     .cell {
