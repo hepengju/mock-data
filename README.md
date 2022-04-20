@@ -1,4 +1,4 @@
 ## 模拟数据生成器
-[地址](https://hepengju.com)
+[演示地址](https://hepengju.com)
 
-![示例](./docs/design/mockdata.png)
+![图片示例](./docs/design/mockdata.png)
