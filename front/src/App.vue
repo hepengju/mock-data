@@ -12,17 +12,29 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import { getGenMap } from './apis';
+import bus from './plugins/bus';
+
 import FooterTable from './components/FooterTable.vue';
 import HeaderGen from './components/HeaderGen.vue';
 import HeaderMeta from './components/HeaderMeta.vue';
 import HeaderSample from './components/HeaderSample.vue';
 
-let dataList = reactive({
+// 生成器(后台已经分组返回)
+const dataList = reactive({
     date_number: [],
     string: [],
     custom: []
+})
+
+// 所有生成器(计算属性)
+const allGens = computed(() => {
+    const gens = []
+    dataList.date_number.forEach(g => gens.push(g))
+    dataList.string.forEach(g => gens.push(g))
+    dataList.custom.forEach(g => gens.push(g))
+    return gens
 })
 
 getGenMap().then(data => {
@@ -37,6 +49,19 @@ getGenMap().then(data => {
         });
     }
 })
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// 随机选择生成器
+bus.on('randomCols', () => {
+    
+})
+
+bus.on('sampleCols', () => {
+    
+})
+
+// 样例配置生成器
+
 </script>
 
 <style lang="less">

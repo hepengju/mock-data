@@ -1,11 +1,53 @@
 <template>
-    <el-row v-show="columns.length > 0" class="btn-line">
-        <div class="btn">
-            <el-button type="primary" @click="refreshData">刷新表格</el-button>
-            <el-button type="danger" @click="deleteAll">清空表格</el-button>
-            <el-button type="info" @click="saveHis">保存表格</el-button>
+    <el-row style="margin: 10px;">
+        <!-- 
+            // flex布局, 左边按钮, 右边配置
+            // margin-right 不设置的话默认是0，父容器width 定宽之后，margin-right取值为 auto ，则自动占据了剩余的全部宽度
+         -->
+        <div class="btn" style="margin-right: auto;">
+            <el-button-group>
+                <el-tooltip content="随机选择N个生成器" placement="top-start">
+                    <el-button type="primary" :icon="Orange" @click="randomCols">随机</el-button>
+                </el-tooltip>
+
+                <el-tooltip content="样例生成器列表" placement="top-start">
+                    <el-dropdown>
+                        <el-button type="info" :icon="Present" @click="sampleCols">
+                            样例&nbsp;
+                            <el-icon>
+                                <arrow-down />
+                            </el-icon>
+                        </el-button>
+
+                        <template #dropdown>
+                            <el-dropdown-menu>
+                                <el-dropdown-item>Action 1</el-dropdown-item>
+                                <el-dropdown-item>Action 2</el-dropdown-item>
+                                <el-dropdown-item>Action 3</el-dropdown-item>
+                                <el-dropdown-item>Action 4</el-dropdown-item>
+                                <el-dropdown-item>Action 5</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+
+                </el-tooltip>
+
+
+            </el-button-group>
+
+            <el-button-group v-show="columns.length > 0" style="margin-left: 20px">
+                <el-tooltip content="刷新表格中的样例数据" placement="top-start">
+                    <el-button type="success" :icon="Refresh" @click="refreshData">刷新</el-button>
+                </el-tooltip>
+                <el-tooltip content="保存当前表格到历史记录" placement="top-start">
+                    <el-button type="warning" :icon="Wallet" @click="saveHis">保存</el-button>
+                </el-tooltip>
+                <el-tooltip content="删除当前表格全部列" placement="top-start">
+                    <el-button type="danger" :icon="Delete" @click="deleteAll">清空</el-button>
+                </el-tooltip>
+            </el-button-group>
         </div>
-        <div class="config">
+        <div class="config" v-show="columns.length > 0">
             <el-form ref="formRef" :model="config" label-width="70px" :inline="true">
                 <el-form-item label="下载行数">
                     <el-input-number v-model="config.sampleSize" :min="10" :max="100000" :step="100" />
@@ -22,16 +64,17 @@
                     </el-select>
                 </el-form-item>
 
-                <el-button type="primary" @click="downData" style="width: 80px;">
+                <el-button type="primary" @click="downData" style="width: 80px;" :icon="Download"
+                    :loading="status.loading">
                     <span>下载</span>
-                    <span v-if="config.timerCount > 0">({{ config.timerCount }})</span>
+                    <span v-if="status.timerCount > 0">({{ status.timerCount }})</span>
                 </el-button>
             </el-form>
         </div>
     </el-row>
 
     <div v-show="columns.length == 0">
-        <div class="hint">请点击上方生成器，生成所需模拟数据...</div>
+        <div class="prompt">请点击上方生成器，生成所需模拟数据...</div>
         <div class="history" v-show="tables.length > 0">
             <div>
                 <el-tooltip content="点击此处清空历史记录，点击下面列表打开对应表格" placement="top-start">
@@ -76,7 +119,7 @@
 </template>
 
 <script setup>
-import { CloseBold, Close } from '@element-plus/icons-vue';
+import { CloseBold, Close, Refresh, Delete, Wallet, Orange, Present, Download, ArrowDown } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import { ElMessage } from 'element-plus';
 import { nanoid } from 'nanoid';
@@ -84,14 +127,27 @@ import { computed, getCurrentInstance, onMounted, onUnmounted, onUpdated, reacti
 import { downTable, getData, refreshTable } from '../apis';
 import bus from '../plugins/bus';
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~数据~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// 样例数为固定的10个
+const ROW_COUNT = 10
+
+// 配置区
 const config = reactive({
     sampleSize: 100,
     fileName: '测试表',
     fileFormat: 'excel',
-    timerCount: 0,
-    rowCount: 10
 })
+
+// 下载按钮状态
+const status = reactive({
+    timerCount: 0,
+    loading: false
+})
+
+// 表格数据
 const columns = reactive([])
+
+// 历史记录
 const tables = reactive([])
 
 // 行数据, 可以由列数据计算出来(因为列上面已经保存了生成器的样例数据)
@@ -99,7 +155,7 @@ const data = computed(() => {
     const rows = []
     if (columns.length == 0) return rows
 
-    for (let i = 0; i < config.rowCount; i++) {
+    for (let i = 0; i < ROW_COUNT; i++) {
         const row = {}
         for (let j = 0; j < columns.length; j++) {
             const col = columns[j]
@@ -112,6 +168,7 @@ const data = computed(() => {
     return rows
 })
 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~功能~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // 删除列
 function deleteColumn(col) {
     const key = col.key
@@ -135,14 +192,16 @@ function hoverColumn(col) {
 }
 
 // 添加列
-bus.on('addColumn', gen => {
-    const key = nanoid()
-    columns.push({
-        key,
-        label: gen.columnTitle,
-        color: gen.color,
-        meta: { ...gen, isModified: true, columnKey: key },
-    })
+bus.on('addColumn', gens => {
+    gens.forEach(gen => {
+        const key = nanoid()
+        columns.push({
+            key,
+            label: gen.columnTitle,
+            color: gen.color,
+            meta: { ...gen, isModified: true, columnKey: key },
+        })
+    });
 })
 
 // 详细配置后, 保存更新列数据
@@ -159,7 +218,7 @@ bus.on('updateMeta', meta => {
         col.label = meta.columnTitle
         col.meta = meta
 
-        for (let i = 0; i < config.rowCount; i++) {
+        for (let i = 0; i < ROW_COUNT; i++) {
             col.meta.sampleData[i] = data[i]
         }
 
@@ -170,6 +229,12 @@ bus.on('updateMeta', meta => {
     })
 })
 
+// 卸载时去掉事件监听
+onUnmounted(() => {
+    bus.off('addColumn')
+    bus.off('updateMeta')
+})
+
 // 刷新表格数据
 function refreshData() {
     refreshTable({
@@ -177,7 +242,7 @@ function refreshData() {
         sampleSize: 10
     }).then(data => {
 
-        for (let i = 0; i < config.rowCount; i++) {
+        for (let i = 0; i < ROW_COUNT; i++) {
             for (let j = 0; j < columns.length; j++) {
                 const col = columns[j];
                 col.meta.sampleData[i] = data[i][col.key]
@@ -217,6 +282,16 @@ function getMetaList() {
     })
 }
 
+// 随机选择生成器
+function randomCols() {
+    bus.emit('randomCols')
+}
+
+// 表格的样例
+function sampleCols() {
+    bus.emit('randomCols')
+}
+
 // 下载数据
 function downData() {
     const params = {
@@ -226,17 +301,20 @@ function downData() {
         metaList: getMetaList()
     }
 
-    config.timerCount = 5
+    status.timerCount = 5
+    status.loading = true
     downTable(params).then(res => {
+        status.loading = false
+
         let timer = setInterval(() => {
-            config.timerCount--
-            if (config.timerCount <= 0) {
+            status.timerCount--
+            if (status.timerCount <= 0) {
                 clearInterval(timer)
             }
         }, 1000)
 
         // 下载成功后, 保存到历史记录
-        saveHis()
+        saveHis(false)
     })
 }
 
@@ -245,12 +323,6 @@ onUpdated(() => {
     if (columns.length > 0) {
         getCurrentInstance().proxy.$refs.table.doLayout()
     }
-})
-
-// 卸载时去掉事件监听
-onUnmounted(() => {
-    bus.off('addColumn')
-    bus.off('updateMeta')
 })
 
 //#region
@@ -339,7 +411,7 @@ function initHis() {
 }
 
 // 保存历史记录
-function saveHis() {
+function saveHis(showMessage = true) {
     tables.unshift({
         name: config.fileName + dayjs().format('_YYYYMMDD_HHmmss'),
         hint: columns.map(c => c.label).join('、'),
@@ -352,19 +424,20 @@ function saveHis() {
     }
 
     localStorage.setItem(ITEM_KEY, JSON.stringify(tables))
-    ElMessage({
-        message: '保存成功',
-        type: 'success',
-    })
+
+    if (showMessage) {
+        ElMessage({
+            message: '保存成功',
+            type: 'success',
+        })
+    }
 }
 
 // 打开某条历史
 function openHis({ config: tabConfig, columns: tabColumns }) {
-    config.sampleSize = tabConfig.sampleData
-    config.fileName = tabConfig.fileName
-    config.fileFormat = tabConfig.fileFormat
-    config.timerCount = 0
-    config.rowCount = 10
+    config.sampleSize = tabConfig.sampleData || 100
+    config.fileName = tabConfig.fileName || '测试表'
+    config.fileFormat = tabConfig.fileFormat || 'excel'
 
     columns.splice(0, columns.length)
     columns.push(...tabColumns)
@@ -394,17 +467,6 @@ function deleteHis(index) {
 </script>
 
 <style lang="less">
-// 上下有点外边距, 左右和上方外边距一致
-.btn-line {
-    margin: 10px 5px;
-}
-
-// flex布局, 左边按钮, 右边配置
-// margin-right 不设置的话默认是0，父容器width 定宽之后，margin-right取值为 auto ，则自动占据了剩余的全部宽度
-.btn {
-    margin-right: auto;
-}
-
 // 按钮右侧的表单样式, 并定制第三个input(select)的宽度
 .el-form--inline .el-form-item {
     margin-bottom: 0;
@@ -491,11 +553,12 @@ thead {
 
 //~~~~~~~~~~~~~~历史记录~~~~~~~~~~~~~~
 // 默认没有数据时显示文字样式
-.hint {
-    font-size: 20px;
+.prompt {
+    color: rgba(gray, .5);
+    font-size: 26px;
     font-style: italic;
     text-align: center;
-    margin-top: 100px;
+    margin-top: 80px;
 }
 
 .history {

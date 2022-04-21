@@ -19,7 +19,7 @@ import Card from './Card.vue';
 defineProps(['name', 'title', 'width', 'gens'])
 
 function addColumn(gen) {
-    bus.emit('addColumn', gen)
+    bus.emit('addColumn', [gen])
 }
 
 function hoverGen(gen) {
