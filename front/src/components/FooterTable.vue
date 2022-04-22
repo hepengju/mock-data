@@ -89,13 +89,14 @@
     </div>
 
     <el-table v-show="columns.length > 0" :data="data" border ref="table" table-layout="auto"
-        :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName">
+        :cell-class-name="dragClassName" :header-cell-class-name="dragClassName">
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
-                <div :style="{ color: col.color }" @mousemove="mouseMove(index)">{{
-                    scope.row[col.key]
+                <div class="text" :style="{ color: col.color }" @mousemove="mouseMove(index)">{{
+                        scope.row[col.key]
                 }}</div>
+                <div class="virtual"></div>
             </template>
 
             <template #header>
@@ -224,7 +225,7 @@ bus.on(ADD_COLUMNS, e => {
             }
         ).then(() => {
             columns.splice(0)
-            
+
             addColumns(e.gens)
             if (e.refreshAll) {
                 refreshData()
@@ -362,10 +363,6 @@ function mouseDown(index) {
     dragState.dragging = true
     dragState.start = index
     const table = document.getElementsByClassName('el-table')[0]
-    const virtual = document.getElementsByClassName('virtual')
-    for (let item of virtual) {
-        item.style.height = table.clientHeight - 1 + 'px'
-    }
 
     // 20220420 避免拖动时同时hover行, 引起的虚线被遮住一部分
     dragState.hoverColor = getComputedStyle(table).getPropertyValue('--el-table-row-hover-bg-color')
@@ -399,21 +396,17 @@ function mouseMove(index) {
     }
 }
 
-function headerCellClassName({ columnIndex }) {
+function dragClassName({ columnIndex }) {
     if (!dragState.dragging) return ''
     let active = ''
+    
     if (dragState.start < dragState.end) {
-        active = columnIndex - 2 === dragState.end ? 'drag_active' : ''
-    } else if (dragState.start > dragState.end) {
         active = columnIndex - 1 === dragState.end ? 'drag_active' : ''
+    } else if (dragState.start > dragState.end) {
+        active = columnIndex === dragState.end ? 'drag_active' : ''
     }
     let start = columnIndex - 1 === dragState.start ? 'drag_start' : ''
     return `${active} ${start}`
-}
-
-function cellClassName({ columnIndex }) {
-    if (!dragState.dragging) return ''
-    return (columnIndex - 1 === dragState.start ? 'drag_start' : '')
 }
 //#endregion
 
@@ -494,17 +487,17 @@ function deleteHis(index) {
     width: 220px;
 }
 
-// 表格的默认颜色改为黑色 ==> 序号列显示为黑色
-.cell {
-    color: black;
+// 表格
+.el-table {
+    .el-table__cell,
+    .cell {
+        padding: 0 !important; // 去掉padding(因为拖拽的虚线位置)
+        color: black;        // 默认颜色改为黑色 ==> 序号列显示为黑色
+    }
 }
 
 // 表格标题
 .el-table thead {
-    .el-table__cell,
-    .cell {
-        padding: 0 !important;
-    }
 
     .title {
         display: flex;
@@ -520,7 +513,7 @@ function deleteHis(index) {
         .name {
             flex-grow: 1;
             // 此处处理标题头的...省略号显示, 实测不行(猜测是table-layout的auto影响), 但是加入此行还是可以合适显示的
-            white-space: nowrap; 
+            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -540,17 +533,16 @@ function deleteHis(index) {
 
 // 表格数据
 .el-table tbody {
-
     // 减少行高
     .el-table__cell {
-        padding: 5px 0;
         height: 32px !important;
 
         // 文字多余省略显示
         .cell {
             max-width: 200px;
 
-            div {
+            .text {
+                margin: 0 10px;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -567,7 +559,10 @@ function deleteHis(index) {
 
 // 拖拽线默认无边框
 .virtual {
-    position: fixed;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 100%;
     border: none;
 }
 
