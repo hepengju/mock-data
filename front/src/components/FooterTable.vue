@@ -42,14 +42,13 @@
             </el-button-group>
         </div>
         <div class="config" v-show="columns.length > 0">
-            <el-form ref="formRef" :model="config" label-width="70px" :inline="true">
-                <el-form-item label="下载行数">
-                    <el-input-number v-model="config.sampleSize" :min="10" :max="100000" :step="100" />
+            <el-form ref="formRef" :model="config" label-width="40px" :inline="true">
+                <el-form-item label="列数">
+                    <el-input :value="columns.length" disabled />
                 </el-form-item>
-                <el-form-item label="文件名称" for="fileName">
-                    <el-input id="fileName" v-model="config.fileName" />
-                </el-form-item>
-                <el-form-item label="格式" style="width: 160px;">
+
+
+                <el-form-item label="格式">
                     <el-select v-model="config.fileFormat">
                         <el-option label="Excel" value="excel" />
                         <el-option label="SQL" value="sql" />
@@ -58,13 +57,22 @@
                     </el-select>
                 </el-form-item>
 
+                <el-form-item label="文件" for="fileName">
+                    <el-input id="fileName" v-model="config.fileName" />
+                </el-form-item>
+
+                <el-form-item label="行数">
+                    <el-input-number v-model="config.sampleSize" :min="10" :max="100000" :step="100" />
+                </el-form-item>
+
                 <el-button type="primary" @click="downData" style="width: 80px;" :icon="Download"
-                    :loading="status.loading">
+                    :loading="status.loading" :disabled="status.timerCount > 0">
                     <span>下载</span>
                     <span v-if="status.timerCount > 0">({{ status.timerCount }})</span>
                 </el-button>
             </el-form>
         </div>
+
     </el-row>
 
     <div v-show="columns.length == 0">
@@ -511,12 +519,23 @@ function deleteHis(index) {
 
 <style lang="less">
 //按钮右侧的表单样式, 并定制第三个input(select)的宽度
-.el-form--inline .el-form-item {
-    margin-bottom: 0;
-    margin-right: 20px;
-    width: 220px;
+.el-form--inline {
+    .el-form-item {
+        margin-bottom: 0;
+        margin-right: 20px;
+        width: 180px;
+    }
+
+    .el-form-item:nth-child(1) {
+        width: 90px;
+    }
+
+    .el-form-item:nth-child(2) {
+        width: 120px;
+    }
 }
 
+// 行数框的上边框被遮住的处理
 .el-input-number__decrease,
 .el-input-number__increase {
     top: 2px
@@ -528,9 +547,9 @@ function deleteHis(index) {
     .el-table__cell,
     .cell {
         padding: 0 !important; // 去掉padding(因为拖拽的虚线位置)
-        color: black;        // 默认颜色改为黑色 ==> 序号列显示为黑色
-        min-width: 40px;       // 最小宽度 ==> 序号列在列很多时也要保持最小宽度
-        overflow: visible;     // 拖拽虚线的显示
+        color: black; // 默认颜色改为黑色 ==> 序号列显示为黑色
+        min-width: 40px; // 最小宽度 ==> 序号列在列很多时也要保持最小宽度
+        overflow: visible; // 拖拽虚线的显示
     }
 }
 
