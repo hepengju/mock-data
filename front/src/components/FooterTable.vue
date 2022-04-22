@@ -7,13 +7,13 @@
         <div class="btn" style="margin-right: auto;">
             <el-button-group>
                 <el-tooltip content="随机选择N个生成器" placement="top-start">
-                    <el-button type="primary" :icon="Orange" @click="randomCols">随机</el-button>
+                    <el-button type="primary" :icon="Orange" @click="randomCols">随机选择</el-button>
                 </el-tooltip>
 
                 <el-tooltip content="样例生成器列表" placement="top-start">
-                    <el-dropdown>
-                        <el-button type="info" :icon="Present" @click="sampleCols">
-                            样例&nbsp;
+                    <el-dropdown @command="sampleCols">
+                        <el-button type="info" :icon="Present">
+                            预设样例&nbsp;
                             <el-icon>
                                 <arrow-down />
                             </el-icon>
@@ -21,18 +21,12 @@
 
                         <template #dropdown>
                             <el-dropdown-menu>
-                                <el-dropdown-item>Action 1</el-dropdown-item>
-                                <el-dropdown-item>Action 2</el-dropdown-item>
-                                <el-dropdown-item>Action 3</el-dropdown-item>
-                                <el-dropdown-item>Action 4</el-dropdown-item>
-                                <el-dropdown-item>Action 5</el-dropdown-item>
+                                <el-dropdown-item command="user">用户表</el-dropdown-item>
+                                <el-dropdown-item command="role">角色表</el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
-
                 </el-tooltip>
-
-
             </el-button-group>
 
             <el-button-group v-show="columns.length > 0" style="margin-left: 20px">
@@ -119,18 +113,19 @@
 </template>
 
 <script setup>
-import { CloseBold, Close, Refresh, Delete, Wallet, Orange, Present, Download, ArrowDown } from '@element-plus/icons-vue';
+import { ArrowDown, Close, CloseBold, Delete, Download, Orange, Present, Refresh, Wallet } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import { ElMessage } from 'element-plus';
 import { nanoid } from 'nanoid';
 import { computed, getCurrentInstance, onMounted, onUnmounted, onUpdated, reactive } from 'vue';
 import { downTable, getData, refreshTable } from '../apis';
+import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, RANDOM_COLS, ROW_COUNT, SAMPLE_COLS, TIMER_COUNT, UPDATE_META } from '../consts';
 import bus from '../plugins/bus';
 
+onUnmounted(() => {
+    bus.off(ADD_COLUMNS, UPDATE_META)
+})
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~数据~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// 样例数为固定的10个
-const ROW_COUNT = 10
-
 // 配置区
 const config = reactive({
     sampleSize: 100,
@@ -167,8 +162,17 @@ const data = computed(() => {
 
     return rows
 })
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~功能~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// 随机选择生成器
+function randomCols() {
+    bus.emit(RANDOM_COLS)
+}
+
+// 预设样例选择
+function sampleCols(command) {
+    bus.emit(SAMPLE_COLS, command)
+}
+
 // 删除列
 function deleteColumn(col) {
     const key = col.key
@@ -187,12 +191,12 @@ function hoverColumn(col) {
     // 20220420 拖拽中不触发
     if (dragState.dragging) return false
 
-    bus.emit('hoverGen', col.meta)
+    bus.emit(HOVER_GEN, col.meta)
     return false
 }
 
 // 添加列
-bus.on('addColumn', gens => {
+function addColumns(gens) {
     gens.forEach(gen => {
         const key = nanoid()
         columns.push({
@@ -202,26 +206,49 @@ bus.on('addColumn', gens => {
             meta: { ...gen, isModified: true, columnKey: key },
         })
     });
+}
+
+bus.on(ADD_COLUMNS, e => {
+    if (e.deleteAll && columns.length > 0) {
+        ElMessageBox.confirm(
+            '确认覆盖全部列吗？',
+            '系统提示',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }
+        ).then(() => {
+            columns.splice(0)
+            addColumns(e.gens)
+        }).catch(() => { })
+    } else {
+        addColumns(e.gens)
+    }
 })
 
 // 详细配置后, 保存更新列数据
-bus.on('updateMeta', meta => {
-    const params = { sampleSize: 10, ...meta }
+bus.on(UPDATE_META, meta => {
+    const params = { sampleSize: ROW_COUNT, ...meta }
 
     // 发送请求前删除多余数据
     delete params.sampleData
     delete params.color
     delete params.isModified
 
+
     getData(params).then(data => {
-        const col = columns.filter(c => c.key == meta.columnKey)
-        col.label = meta.columnTitle
-        col.meta = meta
+        columns.forEach(col => {
+            if (col.key != meta.columnKey) return;
 
-        for (let i = 0; i < ROW_COUNT; i++) {
-            col.meta.sampleData[i] = data[i]
-        }
+            col.label = meta.columnTitle
+            col.meta = meta
 
+            for (let i = 0; i < ROW_COUNT; i++) {
+                col.meta.sampleData[i] = data[i]
+            }
+
+        })
         ElMessage({
             message: '保存并获取数据成功',
             type: 'success',
@@ -229,17 +256,11 @@ bus.on('updateMeta', meta => {
     })
 })
 
-// 卸载时去掉事件监听
-onUnmounted(() => {
-    bus.off('addColumn')
-    bus.off('updateMeta')
-})
-
 // 刷新表格数据
 function refreshData() {
     refreshTable({
         metaList: getMetaList(),
-        sampleSize: 10
+        sampleSize: ROW_COUNT
     }).then(data => {
 
         for (let i = 0; i < ROW_COUNT; i++) {
@@ -282,16 +303,6 @@ function getMetaList() {
     })
 }
 
-// 随机选择生成器
-function randomCols() {
-    bus.emit('randomCols')
-}
-
-// 表格的样例
-function sampleCols() {
-    bus.emit('randomCols')
-}
-
 // 下载数据
 function downData() {
     const params = {
@@ -301,9 +312,9 @@ function downData() {
         metaList: getMetaList()
     }
 
-    status.timerCount = 5
+    status.timerCount = TIMER_COUNT
     status.loading = true
-    downTable(params).then(res => {
+    downTable(params).then(() => {
         status.loading = false
 
         let timer = setInterval(() => {
@@ -397,7 +408,6 @@ function cellClassName({ columnIndex }) {
 //#endregion
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~本地保存~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-const ITEM_KEY = 'tables'
 // 挂载恢复表格
 onMounted(() => {
     initHis()

@@ -73,6 +73,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import { HOVER_GEN, UPDATE_META } from '../consts';
 import bus from '../plugins/bus';
 
 defineProps(['name', 'title', 'width'])
@@ -92,13 +93,13 @@ let meta = ref({
 
 // 此处的备份和保存, 都采用复制1份的操作
 let bakMeta = {}
-bus.on('hoverGen', gen => {
+bus.on(HOVER_GEN, gen => {
     bakMeta = { ...gen }
     meta.value = { ...gen }
 })
 
 function confirmForm(meta) {
-    bus.emit('updateMeta', { ...meta })
+    bus.emit(UPDATE_META, { ...meta })
 }
 
 function resetForm() {

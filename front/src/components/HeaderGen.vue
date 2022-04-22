@@ -2,28 +2,26 @@
     <Card :name="name" :title="title" :width="width">
         <ul>
             <li v-for="gen in gens" :key="gen.name">
-                <el-button
-                    :style="{ backgroundColor: gen.color, color: '#fff' }"
-                    @click="addColumn(gen)"
-                    @mouseenter="hoverGen(gen)"
-                >{{ gen.columnTitle }}</el-button>
+                <el-button :style="{ backgroundColor: gen.color, color: '#fff' }" @click="addColumn(gen)"
+                    @mouseenter="hoverGen(gen)">{{ gen.columnTitle }}</el-button>
             </li>
         </ul>
     </Card>
 </template>
 
 <script setup>
+import { ADD_COLUMNS, HOVER_GEN } from '../consts';
 import bus from '../plugins/bus';
 import Card from './Card.vue';
 
 defineProps(['name', 'title', 'width', 'gens'])
 
 function addColumn(gen) {
-    bus.emit('addColumn', [gen])
+    bus.emit(ADD_COLUMNS, { gens: [gen] })
 }
 
 function hoverGen(gen) {
-    bus.emit('hoverGen', gen)
+    bus.emit(HOVER_GEN, gen)
 }
 </script>
 

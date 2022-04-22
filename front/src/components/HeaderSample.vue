@@ -8,6 +8,7 @@
 
 <script setup>
 import { reactive } from 'vue';
+import { HOVER_GEN } from '../consts';
 import bus from '../plugins/bus';
 import Card from './Card.vue';
 
@@ -17,7 +18,7 @@ const data = reactive({
     color: '#75799d'
 })
 
-bus.on('hoverGen', gen => {
+bus.on(HOVER_GEN, gen => {
     data.arrs = gen.sampleData
     data.color = gen.color
 })
