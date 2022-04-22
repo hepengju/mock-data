@@ -14,7 +14,7 @@
 <script setup>
 import { reactive } from 'vue';
 import { getGenMap } from './apis';
-import _ from 'lodash';
+import _shuffleSelf from 'lodash/_shuffleSelf';
 import FooterTable from './components/FooterTable.vue';
 import HeaderGen from './components/HeaderGen.vue';
 import HeaderMeta from './components/HeaderMeta.vue';
@@ -62,7 +62,8 @@ bus.on(RANDOM_COLS, () => {
     }
 
     // 上面的随机选择的gens总是按照Object.keys的顺序的, 此处添加lodash随机打乱下
-    bus.emit(ADD_COLUMNS, { gens: _.shuffle(gens), deleteAll: true })
+    _shuffleSelf(gens)
+    bus.emit(ADD_COLUMNS, { gens, deleteAll: true })
 })
 </script>
 
