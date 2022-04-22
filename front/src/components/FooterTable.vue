@@ -89,15 +89,13 @@
     </div>
 
     <el-table v-show="columns.length > 0" :data="data" border ref="table" table-layout="auto"
-        :cell-class-name="dragClassName" :header-cell-class-name="dragClassName">
-        <el-table-column type="index" label="#" align="center" fixed="left"/>
+        :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName">
+        <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
-                <div class="virtual-left"></div>
                 <div class="text" :style="{ color: col.color }" @mousemove="mouseMove(index)">{{
                         scope.row[col.key]
                 }}</div>
-                <div class="virtual-right"></div>
             </template>
 
             <template #header>
@@ -214,7 +212,7 @@ function addColumns(gens) {
                 ...gen,
                 isModified: true,
                 columnKey: key,
-                sampleData: gen.sampleData ? [...gen.sampleData] : [...ROW_ARRAY] 
+                sampleData: gen.sampleData ? [...gen.sampleData] : [...ROW_ARRAY]
             },
         })
     });
@@ -365,11 +363,34 @@ let dragState = reactive({
     hoverColor: null // 拖动时选中行会遮挡掉虚线, 因此处理下
 })
 
+// 一挂载就设置好虚线的高度
+// onMounted(() => {
+//     const table = document.getElementsByClassName('el-table')[0]
+//     const virtualLeft = document.getElementsByClassName('virtual-left')
+//     const virtualRight = document.getElementsByClassName('virtual-right')
+//     for (let item of virtualLeft) {
+//         item.style.height = table.clientHeight - 1 + 'px'
+//     }
+//     for (let item of virtualRight) {
+//         item.style.height = table.clientHeight - 1 + 'px'
+//     }
+// })
+
 // 鼠标按下开始拖动
 function mouseDown(index) {
     dragState.dragging = true
     dragState.start = index
     const table = document.getElementsByClassName('el-table')[0]
+
+    const tableHeight = table.clientHeight - 1 + 'px'
+    const virtual01 = document.getElementsByClassName('virtual-left')
+    const virtual02 = document.getElementsByClassName('virtual-right')
+    for (let item of virtual01) {
+        item.style.height = tableHeight
+    }
+    for (let item of virtual02) {
+        item.style.height = tableHeight
+    }
 
     // 20220420 避免拖动时同时hover行, 引起的虚线被遮住一部分
     dragState.hoverColor = getComputedStyle(table).getPropertyValue('--el-table-row-hover-bg-color')
@@ -403,7 +424,7 @@ function mouseMove(index) {
     }
 }
 
-function dragClassName({ columnIndex }) {
+function headerCellClassName({ columnIndex }) {
     if (!dragState.dragging) return ''
     let active = ''
     if (columnIndex - 1 === dragState.end && dragState.start != dragState.end) {
@@ -411,6 +432,11 @@ function dragClassName({ columnIndex }) {
     }
     const start = columnIndex - 1 === dragState.start ? 'drag-start' : ''
     return `${active} ${start}`
+}
+
+function cellClassName({ columnIndex }) {
+    if (!dragState.dragging) return ''
+    return (columnIndex - 1 === dragState.start ? 'drag_start' : '')
 }
 //#endregion
 
@@ -491,7 +517,8 @@ function deleteHis(index) {
     width: 220px;
 }
 
-.el-input-number__decrease, .el-input-number__increase {
+.el-input-number__decrease,
+.el-input-number__increase {
     top: 2px
 }
 
@@ -501,9 +528,9 @@ function deleteHis(index) {
     .el-table__cell,
     .cell {
         padding: 0 !important; // 去掉padding(因为拖拽的虚线位置)
-        color: black; // 默认颜色改为黑色 ==> 序号列显示为黑色
-        min-width: 40px;
-        max-width: 200px;
+        color: black;        // 默认颜色改为黑色 ==> 序号列显示为黑色
+        min-width: 40px;       // 最小宽度 ==> 序号列在列很多时也要保持最小宽度
+        overflow: visible;     // 拖拽虚线的显示
     }
 }
 
@@ -551,6 +578,8 @@ function deleteHis(index) {
 
         // 文字多余省略显示
         .cell {
+            max-width: 200px;
+
             .text {
                 margin: 0 10px;
                 white-space: nowrap;
