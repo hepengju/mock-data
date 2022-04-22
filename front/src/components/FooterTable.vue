@@ -11,7 +11,7 @@
                 </el-tooltip>
 
                 <el-tooltip content="样例生成器列表" placement="top-start">
-                    <el-dropdown @command="sampleCols">
+                    <el-dropdown @command="preTables">
                         <el-button type="info" :icon="Present">
                             预设样例&nbsp;
                             <el-icon>
@@ -21,8 +21,8 @@
 
                         <template #dropdown>
                             <el-dropdown-menu>
-                                <el-dropdown-item command="user">用户表</el-dropdown-item>
-                                <el-dropdown-item command="role">角色表</el-dropdown-item>
+                                <el-dropdown-item v-for="(_, name) in PRE_TABLS" :key="name" :command="name">{{ name }}
+                                </el-dropdown-item>
                             </el-dropdown-menu>
                         </template>
                     </el-dropdown>
@@ -93,7 +93,9 @@
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
-                <span :style="{ color: col.color }" @mousemove="mouseMove(index)">{{ scope.row[col.key] }}</span>
+                <div :style="{ color: col.color }" @mousemove="mouseMove(index)">{{
+                    scope.row[col.key]
+                }}</div>
             </template>
 
             <template #header>
@@ -119,7 +121,7 @@ import { ElMessage } from 'element-plus';
 import { nanoid } from 'nanoid';
 import { computed, getCurrentInstance, onMounted, onUnmounted, onUpdated, reactive } from 'vue';
 import { downTable, getData, refreshTable } from '../apis';
-import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, RANDOM_COLS, ROW_COUNT, SAMPLE_COLS, TIMER_COUNT, UPDATE_META } from '../consts';
+import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, PRE_TABLS, RANDOM_COLS, ROW_ARRAY, ROW_COUNT, TIMER_COUNT, UPDATE_META } from '../consts';
 import bus from '../plugins/bus';
 
 onUnmounted(() => {
@@ -168,9 +170,10 @@ function randomCols() {
     bus.emit(RANDOM_COLS)
 }
 
-// 预设样例选择
-function sampleCols(command) {
-    bus.emit(SAMPLE_COLS, command)
+// 预设样例选择: 获取到对应的meta数组, 去请求数据
+function preTables(command) {
+    const gens = PRE_TABLS[command]
+    bus.emit(ADD_COLUMNS, { gens, deleteAll: true, refreshAll: true })
 }
 
 // 删除列
@@ -203,7 +206,7 @@ function addColumns(gens) {
             key,
             label: gen.columnTitle,
             color: gen.color,
-            meta: { ...gen, isModified: true, columnKey: key },
+            meta: { ...gen, isModified: true, columnKey: key, sampleData: gen.sampleData || [...ROW_ARRAY] },
         })
     });
 }
@@ -220,10 +223,17 @@ bus.on(ADD_COLUMNS, e => {
             }
         ).then(() => {
             columns.splice(0)
+            
             addColumns(e.gens)
+            if (e.refreshAll) {
+                refreshData()
+            }
         }).catch(() => { })
     } else {
         addColumns(e.gens)
+        if (e.refreshAll) {
+            refreshData()
+        }
     }
 })
 
@@ -232,11 +242,7 @@ bus.on(UPDATE_META, meta => {
     const params = { sampleSize: ROW_COUNT, ...meta }
 
     // 发送请求前删除多余数据
-    delete params.sampleData
-    delete params.color
-    delete params.isModified
-
-
+    deleteNotNeedData(params)
     getData(params).then(data => {
         columns.forEach(col => {
             if (col.key != meta.columnKey) return;
@@ -258,10 +264,13 @@ bus.on(UPDATE_META, meta => {
 
 // 刷新表格数据
 function refreshData() {
-    refreshTable({
-        metaList: getMetaList(),
+    const params = {
+        metaList: columns.map(c => deleteNotNeedData({ ...c.meta })),
         sampleSize: ROW_COUNT
-    }).then(data => {
+    }
+    console.log("刷新参数: ", params)
+
+    refreshTable(params).then(data => {
 
         for (let i = 0; i < ROW_COUNT; i++) {
             for (let j = 0; j < columns.length; j++) {
@@ -294,13 +303,13 @@ function deleteAll() {
     initHis()
 }
 
-// 刷新和下载表格共用的数据处理
-function getMetaList() {
-    return columns.map(c => {
-        let m = { ...c.meta }
-        delete m.sampleData // 减少参数的体积
-        return m
-    })
+// 删除不必要的参数, 减少体积
+function deleteNotNeedData(m) {
+    delete m.sampleData
+    // delete m.color   方便造预设样例, 此处保留(刷新时会打印)
+    delete m.isModified
+    delete m.type
+    return m
 }
 
 // 下载数据
@@ -309,7 +318,7 @@ function downData() {
         sampleSize: config.sampleSize,
         fileName: config.fileName,
         fileFormat: config.fileFormat,
-        metaList: getMetaList()
+        metaList: columns.map(c => deleteNotNeedData({ ...c.meta }))
     }
 
     status.timerCount = TIMER_COUNT
@@ -490,8 +499,7 @@ function deleteHis(index) {
 }
 
 // 表格标题
-// .el-table__header-wrapper { ==> table-layout为fixed时是这样的
-thead {
+.el-table thead {
     // ==> table-layout为auto时是这样的
 
     .el-table__cell,
@@ -528,19 +536,23 @@ thead {
 }
 
 // 表格数据
-.el-table__body-wrapper {
+.el-table tbody {
 
     // 减少行高
     .el-table__cell {
         padding: 5px 0;
-        height: 32px;
-    }
+        height: 32px !important;
 
-    // 文字多余省略显示
-    .cell {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        // 文字多余省略显示
+        .cell {
+            max-width: 200px;
+
+            div {
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
     }
 }
 

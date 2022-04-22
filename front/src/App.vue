@@ -12,18 +12,15 @@
 </template>
 
 <script setup>
-import { onUnmounted, reactive } from 'vue';
+import { reactive } from 'vue';
 import { getGenMap } from './apis';
+import _ from 'lodash';
 import FooterTable from './components/FooterTable.vue';
 import HeaderGen from './components/HeaderGen.vue';
 import HeaderMeta from './components/HeaderMeta.vue';
 import HeaderSample from './components/HeaderSample.vue';
-import { RANDOM_COLS } from './consts';
+import { ADD_COLUMNS, RANDOM_COLS } from './consts';
 import bus from './plugins/bus';
-
-onUnmounted(() => {
-    bus.off(RANDOM_COLS)
-})
 
 // 生成器(后台已经分组返回)
 const dataList = reactive({
@@ -63,7 +60,9 @@ bus.on(RANDOM_COLS, () => {
             }
         }
     }
-    bus.emit('addColumn', { gens, deleteAll: true })
+
+    // 上面的随机选择的gens总是按照Object.keys的顺序的, 此处添加lodash随机打乱下
+    bus.emit(ADD_COLUMNS, { gens: _.shuffle(gens), deleteAll: true })
 })
 </script>
 
