@@ -173,6 +173,7 @@ function randomCols() {
 // 预设样例选择: 获取到对应的meta数组, 去请求数据
 function preTables(command) {
     const gens = PRE_TABLS[command]
+    config.fileName = command
     bus.emit(ADD_COLUMNS, { gens, deleteAll: true, refreshAll: true })
 }
 
