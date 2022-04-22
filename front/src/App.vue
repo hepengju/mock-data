@@ -80,7 +80,7 @@ bus.on(RANDOM_COLS, () => {
     display: flex;
     justify-content: space-evenly;
     overflow: hidden;
-    max-height: 350px;
+    // max-height: 350px;
     margin-right: 20px;
 
     &>div {

@@ -659,7 +659,7 @@ function deleteHis(index) {
 }
 
 .history {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
     margin: 0 20px;
 
