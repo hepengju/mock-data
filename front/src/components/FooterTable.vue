@@ -548,7 +548,7 @@ function deleteHis(index) {
     .cell {
         padding: 0 !important; // 去掉padding(因为拖拽的虚线位置)
         color: black; // 默认颜色改为黑色 ==> 序号列显示为黑色
-        min-width: 40px; // 最小宽度 ==> 序号列在列很多时也要保持最小宽度
+        min-width: 46px; // 最小宽度 ==> 序号列在列很多时也要保持最小宽度
         overflow: visible; // 拖拽虚线的显示
     }
 }
