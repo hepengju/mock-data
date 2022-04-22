@@ -6,7 +6,7 @@
          -->
         <div class="btn" style="margin-right: auto;">
             <el-button-group>
-                <el-tooltip content="随机选择N个生成器" placement="top-start">
+                <el-tooltip content="随机添加N个生成器" placement="top-start">
                     <el-button type="primary" :icon="Orange" @click="randomCols">随机添加</el-button>
                 </el-tooltip>
 
@@ -134,7 +134,8 @@ import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, PRE_TABLS, RANDOM_COLS, ROW_ARRAY, RO
 import bus from '../plugins/bus';
 
 onUnmounted(() => {
-    bus.off(ADD_COLUMNS, UPDATE_META)
+    bus.off(ADD_COLUMNS)
+    bus.off(UPDATE_META)
 })
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~数据~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // 配置区
@@ -209,8 +210,8 @@ function hoverColumn(col) {
 }
 
 // 添加列
-function addColumns(gens) {
-    gens.forEach(gen => {
+function addColumns(e) {
+    e.gens.forEach(gen => {
         const key = nanoid()
         columns.push({
             key,
@@ -224,6 +225,17 @@ function addColumns(gens) {
             },
         })
     });
+
+    if (e.refreshAll) {
+        refreshData()
+    }
+
+    if (e.msg) {
+        ElMessage({
+            message: e.msg,
+            type: 'success',
+        })
+    }
 }
 
 bus.on(ADD_COLUMNS, e => {
@@ -238,17 +250,11 @@ bus.on(ADD_COLUMNS, e => {
             }
         ).then(() => {
             columns.splice(0)
+            addColumns(e)
 
-            addColumns(e.gens)
-            if (e.refreshAll) {
-                refreshData()
-            }
         }).catch(() => { })
     } else {
-        addColumns(e.gens)
-        if (e.refreshAll) {
-            refreshData()
-        }
+        addColumns(e)
     }
 })
 
