@@ -90,7 +90,7 @@
 
     <el-table v-show="columns.length > 0" :data="data" border ref="table" table-layout="auto"
         :cell-class-name="dragClassName" :header-cell-class-name="dragClassName">
-        <el-table-column type="index" label="#" align="center" fixed="left" />
+        <el-table-column type="index" label="#" align="center" fixed="left"/>
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
                 <div class="virtual-left"></div>
@@ -484,11 +484,15 @@ function deleteHis(index) {
 </script>
 
 <style lang="less">
-// 按钮右侧的表单样式, 并定制第三个input(select)的宽度
+//按钮右侧的表单样式, 并定制第三个input(select)的宽度
 .el-form--inline .el-form-item {
     margin-bottom: 0;
     margin-right: 20px;
     width: 220px;
+}
+
+.el-input-number__decrease, .el-input-number__increase {
+    top: 2px
 }
 
 // 表格
@@ -498,6 +502,8 @@ function deleteHis(index) {
     .cell {
         padding: 0 !important; // 去掉padding(因为拖拽的虚线位置)
         color: black; // 默认颜色改为黑色 ==> 序号列显示为黑色
+        min-width: 40px;
+        max-width: 200px;
     }
 }
 
@@ -545,8 +551,6 @@ function deleteHis(index) {
 
         // 文字多余省略显示
         .cell {
-            max-width: 200px;
-
             .text {
                 margin: 0 10px;
                 white-space: nowrap;
