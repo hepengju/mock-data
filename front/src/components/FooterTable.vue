@@ -7,7 +7,7 @@
         <div class="btn" style="margin-right: auto;">
             <el-button-group>
                 <el-tooltip content="随机选择N个生成器" placement="top-start">
-                    <el-button type="primary" :icon="Orange" @click="randomCols">随机选择</el-button>
+                    <el-button type="primary" :icon="Orange" @click="randomCols">随机添加</el-button>
                 </el-tooltip>
 
                 <el-tooltip content="样例生成器列表" placement="top-start">

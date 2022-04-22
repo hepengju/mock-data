@@ -63,7 +63,7 @@ bus.on(RANDOM_COLS, () => {
 
     // 上面的随机选择的gens总是按照Object.keys的顺序的, 此处添加lodash随机打乱下
     _shuffleSelf(gens)
-    bus.emit(ADD_COLUMNS, { gens, deleteAll: true })
+    bus.emit(ADD_COLUMNS, { gens })
 })
 </script>
 
