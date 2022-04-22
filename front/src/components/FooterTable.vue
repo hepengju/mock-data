@@ -210,7 +210,12 @@ function addColumns(gens) {
             key,
             label: gen.columnTitle,
             color: gen.color,
-            meta: { ...gen, isModified: true, columnKey: key, sampleData: gen.sampleData || [...ROW_ARRAY] },
+            meta: {
+                ...gen,
+                isModified: true,
+                columnKey: key,
+                sampleData: gen.sampleData ? [...gen.sampleData] : [...ROW_ARRAY] 
+            },
         })
     });
 }
@@ -243,6 +248,7 @@ bus.on(ADD_COLUMNS, e => {
 
 // 详细配置后, 保存更新列数据
 bus.on(UPDATE_META, meta => {
+    console.log('##', meta)
     const params = { sampleSize: ROW_COUNT, ...meta }
 
     // 发送请求前删除多余数据
@@ -251,6 +257,7 @@ bus.on(UPDATE_META, meta => {
         columns.forEach(col => {
             if (col.key != meta.columnKey) return;
 
+            console.log('@@', col)
             col.label = meta.columnTitle
             col.meta = meta
 
