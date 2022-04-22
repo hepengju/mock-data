@@ -93,14 +93,16 @@
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
+                <div class="virtual-left"></div>
                 <div class="text" :style="{ color: col.color }" @mousemove="mouseMove(index)">{{
                         scope.row[col.key]
                 }}</div>
-                <div class="virtual"></div>
+                <div class="virtual-right"></div>
             </template>
 
             <template #header>
                 <div class="title">
+                    <div class="virtual-left"></div>
                     <div class="name" @mouseenter="hoverColumn(col)" @mousemove="mouseMove(index)"
                         @mousedown="mouseDown(index)">
                         <span :style="{ color: col.color, marginLeft: '10px' }">{{ col.label }}</span>
@@ -108,7 +110,7 @@
                     <div class="icon" @click="deleteColumn(col)">
                         <close-bold style="width: 1em; height: 1em; margin: 0 10px" />
                     </div>
-                    <div class="virtual"></div>
+                    <div class="virtual-right"></div>
                 </div>
             </template>
         </el-table-column>
@@ -399,13 +401,10 @@ function mouseMove(index) {
 function dragClassName({ columnIndex }) {
     if (!dragState.dragging) return ''
     let active = ''
-    
-    if (dragState.start < dragState.end) {
-        active = columnIndex - 1 === dragState.end ? 'drag_active' : ''
-    } else if (dragState.start > dragState.end) {
-        active = columnIndex === dragState.end ? 'drag_active' : ''
+    if (columnIndex - 1 === dragState.end && dragState.start != dragState.end) {
+        active = dragState.start < dragState.end ? 'drag-active-right' : 'drag-active-left'
     }
-    let start = columnIndex - 1 === dragState.start ? 'drag_start' : ''
+    const start = columnIndex - 1 === dragState.start ? 'drag-start' : ''
     return `${active} ${start}`
 }
 //#endregion
@@ -489,10 +488,11 @@ function deleteHis(index) {
 
 // 表格
 .el-table {
+
     .el-table__cell,
     .cell {
         padding: 0 !important; // 去掉padding(因为拖拽的虚线位置)
-        color: black;        // 默认颜色改为黑色 ==> 序号列显示为黑色
+        color: black; // 默认颜色改为黑色 ==> 序号列显示为黑色
     }
 }
 
@@ -533,6 +533,7 @@ function deleteHis(index) {
 
 // 表格数据
 .el-table tbody {
+
     // 减少行高
     .el-table__cell {
         height: 32px !important;
@@ -553,21 +554,34 @@ function deleteHis(index) {
 
 //~~~~~~~~~~~~~~拖拽~~~~~~~~~~~~~~
 // 拖拽的样式
-.drag_start {
+.drag-start {
     background-color: #bfa !important;
 }
 
-// 拖拽线默认无边框
-.virtual {
+// 拖拽线默认无边框(区分为左边和右边, 是为了在两侧的边界处还可以显示虚线)
+.virtual() {
     position: absolute;
-    right: 0;
-    bottom: 0;
     height: 100%;
     border: none;
+    top: 0;
+}
+
+.virtual-left {
+    .virtual();
+    left: 0;
+}
+
+.virtual-right {
+    .virtual();
+    right: 0
 }
 
 // 激活时显示边框
-.drag_active .virtual {
+.drag-active-left .virtual-left {
+    border-left: 2px dotted red;
+}
+
+.drag-active-right .virtual-right {
     border-left: 2px dotted red;
 }
 
