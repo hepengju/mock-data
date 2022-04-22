@@ -11,13 +11,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @ApiModel("自增生成器") @Data @Order(203)
 public class AutoIncrementGenerator extends AbstractNumberGenerator<Integer> {
 
-    private int min = 0;
+    private int min = 1;
     private AtomicInteger atomic;
     private String format = "#";
 
     @Override
     public Integer generate() {
-        return atomic.incrementAndGet();
+        return atomic.getAndIncrement();
     }
 
     public void setMin(int min) {
