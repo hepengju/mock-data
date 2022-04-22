@@ -501,8 +501,6 @@ function deleteHis(index) {
 
 // 表格标题
 .el-table thead {
-    // ==> table-layout为auto时是这样的
-
     .el-table__cell,
     .cell {
         padding: 0 !important;
@@ -521,6 +519,10 @@ function deleteHis(index) {
         // 列名占据左侧部分, 且弹性增长
         .name {
             flex-grow: 1;
+            // 此处处理标题头的...省略号显示, 实测不行(猜测是table-layout的auto影响), 但是加入此行还是可以合适显示的
+            white-space: nowrap; 
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         // 图标显示合适大小并肉眼调整居中
