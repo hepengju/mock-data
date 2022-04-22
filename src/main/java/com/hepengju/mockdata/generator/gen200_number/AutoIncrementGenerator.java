@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AutoIncrementGenerator extends AbstractNumberGenerator<Integer> {
 
     private int min = 1;
-    private AtomicInteger atomic;
+    private AtomicInteger atomic = new AtomicInteger(min);
     private String format = "#";
 
     @Override

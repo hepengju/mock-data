@@ -8,7 +8,7 @@ export const RANDOM_COLS = 'randomCols' // 随机选择生成器事件名称
 export const ITEM_KEY = 'tables'     // localStorage存储历史记录的key名称
 export const TIMER_COUNT = 5         // 点击下载后, 多少秒不能重复下载
 export const ROW_COUNT = 10          // 样例数为固定的10个
-export const ROW_ARRAY = ['','','','','',  '','','','',''] // 样例数为固定的10个
+export const ROW_ARRAY = ['', '', '', '', '', '', '', '', '', ''] // 样例数为固定的10个
 
 // 预设样例表
 export const PRE_TABLS = {
@@ -16,9 +16,9 @@ export const PRE_TABLS = {
         {
             "name": "autoIncrement",
             "columnKey": "FMBpNqp7n8jjctIkO4Rso",
-            "columnTitle": "自增",
+            "columnTitle": "主键",
             "columnName": "autoIncrement",
-            "min": "0",
+            "min": "1",
             "max": null,
             "code": null,
             "codeMulti": false,
@@ -154,62 +154,110 @@ export const PRE_TABLS = {
             "color": "#409eff"
         }],
 
-    '角色表': [
-        {
-            "name": "autoIncrement",
-            "columnKey": "S6SR3ciekKdoTGWAWd_or",
-            "columnTitle": "自增",
-            "columnName": "autoIncrement",
-            "min": "0",
-            "max": null,
-            "code": null,
-            "codeMulti": false,
-            "format": "#",
-            "prefix": "",
-            "suffix": "",
-            "color": "#ff9900"
-        },
-        {
-            "name": "randomAlphabetic",
-            "columnKey": "ScAY2Xwn7MnISZQISN5N5",
-            "columnTitle": "角色代号",
-            "columnName": "randomAlphabetic",
-            "min": "6",
-            "max": "6",
-            "code": null,
-            "codeMulti": false,
-            "format": null,
-            "prefix": "",
-            "suffix": "",
-            "color": "#19be6b"
-        },
-        {
-            "name": "randomChinese",
-            "columnKey": "DEi7Gy5sDXqzGdqYd_X6o",
-            "columnTitle": "角色名称",
-            "columnName": "randomChinese",
-            "min": "3",
-            "max": "4",
-            "code": null,
-            "codeMulti": false,
-            "format": null,
-            "prefix": "",
-            "suffix": "",
-            "color": "#19be6b"
-        },
-        {
-            "name": "dateTime",
-            "columnKey": "-B3Zcu8fG15B2qeXyz1x5",
-            "columnTitle": "创建时间",
-            "columnName": "dateTime",
-            "min": "1900-01-01 00:00:00",
-            "max": "2100-12-31 23:59:59",
-            "code": null,
-            "codeMulti": false,
-            "format": "yyyy-MM-dd HH:mm:ss",
-            "prefix": "",
-            "suffix": "",
-            "color": "#409eff"
-        }
+    '角色表': [{
+        "name": "autoIncrement",
+        "columnKey": "XNCTf0-_KgahlyEMJzbUX",
+        "columnTitle": "主键",
+        "columnName": "autoIncrement",
+        "min": "1",
+        "max": null,
+        "code": null,
+        "codeMulti": false,
+        "format": "#",
+        "prefix": "",
+        "suffix": "",
+        "color": "#ff9900"
+    }, {
+        "name": "randomAlphabetic",
+        "columnKey": "33SxLX62SW2hHFFqnkhrj",
+        "columnTitle": "角色代号",
+        "columnName": "randomAlphabetic",
+        "min": "6",
+        "max": "6",
+        "code": null,
+        "codeMulti": false,
+        "format": null,
+        "prefix": "",
+        "suffix": "",
+        "color": "#19be6b"
+    }, {
+        "name": "randomChinese",
+        "columnKey": "339KRbpZPP5kM3XJdz57b",
+        "columnTitle": "角色名称",
+        "columnName": "randomChinese",
+        "min": "3",
+        "max": "4",
+        "code": null,
+        "codeMulti": false,
+        "format": null,
+        "prefix": "",
+        "suffix": "",
+        "color": "#19be6b"
+    }, {
+        "name": "code",
+        "columnKey": "Zflg04HRu16cD3XdYVFiP",
+        "columnTitle": "创建人",
+        "columnName": "code",
+        "min": null,
+        "max": null,
+        "code": "admin,system",
+        "codeMulti": false,
+        "format": null,
+        "prefix": "",
+        "suffix": "",
+        "color": "#19be6b"
+    }, {
+        "name": "dateTime",
+        "columnKey": "HNY9gPnkDU4yHZfNvKLQN",
+        "columnTitle": "创建时间",
+        "columnName": "dateTime",
+        "min": "2022-01-01 00:00:00",
+        "max": "2022-12-31 23:59:59",
+        "code": null,
+        "codeMulti": false,
+        "format": "yyyy-MM-dd HH:mm:ss",
+        "prefix": "",
+        "suffix": "",
+        "color": "#409eff"
+    }, {
+        "name": "code",
+        "columnKey": "dSi704vTQ1SSaIuvIrCNK",
+        "columnTitle": "更新人",
+        "columnName": "code",
+        "min": null,
+        "max": null,
+        "code": "admin,system",
+        "codeMulti": false,
+        "format": null,
+        "prefix": "",
+        "suffix": "",
+        "color": "#19be6b"
+    }, {
+        "name": "dateTime",
+        "columnKey": "ejco6kby17sZOopshJtr0",
+        "columnTitle": "更新时间",
+        "columnName": "dateTime",
+        "min": "2022-01-01 00:00:00",
+        "max": "2022-12-31 23:59:59",
+        "code": null,
+        "codeMulti": false,
+        "format": "yyyy-MM-dd HH:mm:ss",
+        "prefix": "",
+        "suffix": "",
+        "color": "#409eff"
+    }, {
+        "name": "code",
+        "columnKey": "BhZOCmY17j8JQf2Cjgnnt",
+        "columnTitle": "删除标识",
+        "columnName": "code",
+        "min": null,
+        "max": null,
+        "code": "1,0",
+        "codeMulti": false,
+        "format": null,
+        "prefix": "",
+        "suffix": "",
+        "color": "#19be6b"
+    }
     ]
 }
