@@ -182,9 +182,12 @@ function randomCols() {
 
 // 预设样例选择: 获取到对应的meta数组, 去请求数据
 function preTables(command) {
-    const gens = PRE_TABLS[command]
-    config.fileName = command
-    bus.emit(ADD_COLUMNS, { gens, deleteAll: true, refreshAll: true })
+    bus.emit(ADD_COLUMNS, {
+        gens: PRE_TABLS[command],
+        deleteAll: true,
+        refreshAll: true,
+        fileName: command
+    })
 }
 
 // 删除列
@@ -226,16 +229,24 @@ function addColumns(e) {
         })
     });
 
+    // 预设样例没有sample数据, 需要从后台获取下
     if (e.refreshAll) {
         refreshData()
     }
 
+    // 预设样例修改文件名称
+    if (e.fileName) {
+        config.fileName = e.fileName
+    }
+
+    // 随机添加列后提示一下
     if (e.msg) {
         ElMessage({
             message: e.msg,
             type: 'success',
         })
     }
+
 }
 
 bus.on(ADD_COLUMNS, e => {
@@ -251,7 +262,6 @@ bus.on(ADD_COLUMNS, e => {
         ).then(() => {
             columns.splice(0)
             addColumns(e)
-
         }).catch(() => { })
     } else {
         addColumns(e)
