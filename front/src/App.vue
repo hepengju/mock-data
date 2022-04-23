@@ -9,6 +9,13 @@
     </div>
 
     <FooterTable />
+
+    <div class="widget">
+        <a href='https://gitee.com/hepengju/mock-data' target="_blank">
+            <img src='https://gitee.com/hepengju/mock-data/widgets/widget_1.svg?color=c71d23'
+                alt='Fork me on Gitee' />
+        </a>
+    </div>
 </template>
 
 <script setup>
@@ -87,6 +94,12 @@ bus.on(RANDOM_COLS, () => {
         margin: 0 5px;
         min-width: 120px;
     }
+}
+
+.widget {
+    position: fixed;
+    right: 0;
+    top: 0;
 }
 </style>
 
