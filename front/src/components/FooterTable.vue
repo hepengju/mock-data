@@ -98,7 +98,7 @@
 
     <el-table ref="table" v-show="columns.length > 0" :data="data" border table-layout="auto"
         :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName"
-        @mousewheel="handleScroll">
+        @mousewheel.prevent="handleScroll">
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
@@ -131,7 +131,7 @@ import { ElMessage } from 'element-plus';
 import { nanoid } from 'nanoid';
 import { computed, getCurrentInstance, nextTick, onMounted, onUnmounted, onUpdated, reactive } from 'vue';
 import { downTable, getData, refreshTable } from '../apis';
-import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, MOVE_LENGTH, PRE_TABLS, RANDOM_COLS, ROW_ARRAY, ROW_COUNT, TIMER_COUNT, UPDATE_META } from '../consts';
+import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, MOVE_LENGTH as MOVE_SPEED, PRE_TABLS, RANDOM_COLS, ROW_ARRAY, ROW_COUNT, TIMER_COUNT, UPDATE_META } from '../consts';
 import bus from '../plugins/bus';
 
 // 获取当前实例
@@ -251,6 +251,11 @@ function addColumns(e) {
         })
     }
 
+    // 添加列之后自动滚动到最右侧
+    nextTick(() => {
+        moveLeft = tableBody.offsetWidth - horizontalBar.offsetWidth
+        proxy.$refs.table.setScrollLeft(moveLeft)
+    })
 }
 
 bus.on(ADD_COLUMNS, e => {
@@ -528,35 +533,25 @@ function deleteHis(index) {
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~处理滚动条~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 let moveLeft = 0  // 最左边
-let horizontalBarEle      // 表格的水平滚动条
-let horizontalBarEleThumb // 表格的水平滚动条内的thumb
-let horizontalBarEleThumbTransform
+let tableBody      // 表格体元素
+let horizontalBar  // 水平滚动条元素
+// let horizontalBarEleThumbTransform
 onMounted(() => {
-    horizontalBarEle = document.querySelector('.el-table  .is-horizontal')
-    horizontalBarEleThumb = document.querySelector('.el-table  .is-horizontal .el-scrollbar__thumb')
-    horizontalBarEleThumbTransform = horizontalBarEleThumb.style.transform
+    tableBody = document.querySelector('.el-table__body')
+    horizontalBar = document.querySelector('.el-table  .is-horizontal')
 })
 
 function handleScroll(wheelEvent) {
     // 如果水平滚动条没有出现, 则什么都不处理
-    if (horizontalBarEle.style.display == 'none') return
+    if (horizontalBar.style.display == 'none') return
 
-    // 最右侧停止滚动
-    if (moveLeft > 0
-        && wheelEvent.deltaY > 0
-        && horizontalBarEleThumbTransform == horizontalBarEleThumb.style.transform
-    ) return
-
-    moveLeft = wheelEvent.deltaY > 0 ? moveLeft + MOVE_LENGTH : moveLeft - MOVE_LENGTH
+    moveLeft = wheelEvent.deltaY > 0 ? moveLeft + MOVE_SPEED : moveLeft - MOVE_SPEED
+    const maxMove = tableBody.offsetWidth - horizontalBar.offsetWidth
 
     // 最多滚动到0
     if (moveLeft < 0) moveLeft = 0
+    if (moveLeft > maxMove) moveLeft = maxMove
     proxy.$refs.table.setScrollLeft(moveLeft)
-
-    // 页面刷新后记录上次的transform
-    nextTick(() => {
-        horizontalBarEleThumbTransform = horizontalBarEleThumb.style.transform
-    })
 }
 </script>
 
