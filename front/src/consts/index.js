@@ -10,6 +10,8 @@ export const TIMER_COUNT = 5         // 点击下载后, 多少秒不能重复�
 export const ROW_COUNT = 10          // 样例数为固定的10个
 export const ROW_ARRAY = ['', '', '', '', '', '', '', '', '', ''] // 样例数为固定的10个
 
+export const MOVE_LENGTH = 50        // 表格列过多时的移动速度
+
 // 预设样例表
 export const PRE_TABLS = {
     '用户表': [

@@ -129,9 +129,9 @@ import { ArrowDown, Close, CloseBold, Delete, Download, Orange, Present, Refresh
 import dayjs from 'dayjs';
 import { ElMessage } from 'element-plus';
 import { nanoid } from 'nanoid';
-import { computed, getCurrentInstance, onMounted, onUnmounted, onUpdated, reactive } from 'vue';
+import { computed, getCurrentInstance, nextTick, onMounted, onUnmounted, onUpdated, reactive } from 'vue';
 import { downTable, getData, refreshTable } from '../apis';
-import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, PRE_TABLS, RANDOM_COLS, ROW_ARRAY, ROW_COUNT, TIMER_COUNT, UPDATE_META } from '../consts';
+import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, MOVE_LENGTH, PRE_TABLS, RANDOM_COLS, ROW_ARRAY, ROW_COUNT, TIMER_COUNT, UPDATE_META } from '../consts';
 import bus from '../plugins/bus';
 
 // 获取当前实例
@@ -527,16 +527,36 @@ function deleteHis(index) {
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~处理滚动条~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-const MOVE_LENGTH = 50
-let moveLeft = 0
+let moveLeft = 0  // 最左边
+let horizontalBarEle      // 表格的水平滚动条
+let horizontalBarEleThumb // 表格的水平滚动条内的thumb
+let horizontalBarEleThumbTransform
+onMounted(() => {
+    horizontalBarEle = document.querySelector('.el-table  .is-horizontal')
+    horizontalBarEleThumb = document.querySelector('.el-table  .is-horizontal .el-scrollbar__thumb')
+    horizontalBarEleThumbTransform = horizontalBarEleThumb.style.transform
+})
 
 function handleScroll(wheelEvent) {
     // 如果水平滚动条没有出现, 则什么都不处理
-    console.log(proxy.$refs.table.$el.clientWidth)
+    if (horizontalBarEle.style.display == 'none') return
+
+    // 最右侧停止滚动
+    if (moveLeft > 0
+        && wheelEvent.deltaY > 0
+        && horizontalBarEleThumbTransform == horizontalBarEleThumb.style.transform
+    ) return
+
     moveLeft = wheelEvent.deltaY > 0 ? moveLeft + MOVE_LENGTH : moveLeft - MOVE_LENGTH
 
-    if (moveLeft < 0) moveLeft = 0 // 滚动到最左边停止
+    // 最多滚动到0
+    if (moveLeft < 0) moveLeft = 0 
     proxy.$refs.table.setScrollLeft(moveLeft)
+
+    // 页面刷新后记录上次的transform
+    nextTick(() => {
+        horizontalBarEleThumbTransform = horizontalBarEleThumb.style.transform
+    })
 }
 </script>
 
