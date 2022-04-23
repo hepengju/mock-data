@@ -96,8 +96,9 @@
         </div>
     </div>
 
-    <el-table v-show="columns.length > 0" :data="data" border ref="table" table-layout="auto"
-        :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName">
+    <el-table ref="table" v-show="columns.length > 0" :data="data" border table-layout="auto"
+        :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName"
+        @mousewheel.prevent="handleScroll">
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
@@ -132,6 +133,9 @@ import { computed, getCurrentInstance, onMounted, onUnmounted, onUpdated, reacti
 import { downTable, getData, refreshTable } from '../apis';
 import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, PRE_TABLS, RANDOM_COLS, ROW_ARRAY, ROW_COUNT, TIMER_COUNT, UPDATE_META } from '../consts';
 import bus from '../plugins/bus';
+
+// 获取当前实例
+const { proxy } = getCurrentInstance();
 
 onUnmounted(() => {
     bus.off(ADD_COLUMNS)
@@ -372,7 +376,7 @@ function downData() {
 // !!! 防止动态删除列时的抖动 !!!
 onUpdated(() => {
     if (columns.length > 0) {
-        getCurrentInstance().proxy.$refs.table.doLayout()
+        proxy.$refs.table.doLayout()
     }
 })
 
@@ -387,24 +391,13 @@ let dragState = reactive({
     hoverColor: null // 拖动时选中行会遮挡掉虚线, 因此处理下
 })
 
-// 一挂载就设置好虚线的高度
-// onMounted(() => {
-//     const table = document.getElementsByClassName('el-table')[0]
-//     const virtualLeft = document.getElementsByClassName('virtual-left')
-//     const virtualRight = document.getElementsByClassName('virtual-right')
-//     for (let item of virtualLeft) {
-//         item.style.height = table.clientHeight - 1 + 'px'
-//     }
-//     for (let item of virtualRight) {
-//         item.style.height = table.clientHeight - 1 + 'px'
-//     }
-// })
-
 // 鼠标按下开始拖动
 function mouseDown(index) {
     dragState.dragging = true
     dragState.start = index
-    const table = document.getElementsByClassName('el-table')[0]
+
+    // const table = document.getElementsByClassName('el-table')[0]
+    const table = proxy.$refs.table.$el
 
     const tableHeight = table.clientHeight - 2 + 'px'
     const virtual01 = document.getElementsByClassName('virtual-left')
@@ -436,7 +429,8 @@ function mouseUp() {
     dragState.end = -9
     dragState.dragging = false
 
-    const table = document.getElementsByClassName('el-table')[0]
+    //const table = document.getElementsByClassName('el-table')[0]
+    const table = proxy.$refs.table.$el
     table.style.setProperty('--el-table-row-hover-bg-color', dragState.hoverColor)
     document.removeEventListener('mouseup', mouseUp)
 }
@@ -530,6 +524,19 @@ function clearHis() {
 function deleteHis(index) {
     tables.splice(index, 1)
     localStorage.setItem(ITEM_KEY, JSON.stringify(tables))
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~处理滚动条~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+const MOVE_LENGTH = 50
+let moveLeft = 0
+
+function handleScroll(wheelEvent) {
+    // 如果水平滚动条没有出现, 则什么都不处理
+    console.log(proxy.$refs.table.$el.clientWidth)
+    moveLeft = wheelEvent.deltaY > 0 ? moveLeft + MOVE_LENGTH : moveLeft - MOVE_LENGTH
+
+    if (moveLeft < 0) moveLeft = 0 // 滚动到最左边停止
+    proxy.$refs.table.setScrollLeft(moveLeft)
 }
 </script>
 
