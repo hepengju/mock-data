@@ -97,7 +97,7 @@ bus.on(RANDOM_COLS, () => {
 }
 
 .widget {
-    position: fixed;
+    position: absolute;
     right: 0;
     top: 0;
 }
