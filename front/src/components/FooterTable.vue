@@ -550,7 +550,7 @@ function handleScroll(wheelEvent) {
     moveLeft = wheelEvent.deltaY > 0 ? moveLeft + MOVE_LENGTH : moveLeft - MOVE_LENGTH
 
     // 最多滚动到0
-    if (moveLeft < 0) moveLeft = 0 
+    if (moveLeft < 0) moveLeft = 0
     proxy.$refs.table.setScrollLeft(moveLeft)
 
     // 页面刷新后记录上次的transform
@@ -688,11 +688,28 @@ function handleScroll(wheelEvent) {
 //~~~~~~~~~~~~~~历史记录~~~~~~~~~~~~~~
 // 默认没有数据时显示文字样式
 .prompt {
-    color: rgba(gray, .5);
-    font-size: 26px;
+    font-size: 20px;
     font-style: italic;
+    font-weight: bold;
     text-align: center;
     margin-top: 80px;
+
+    // 光斑动画
+    color: rgba(gray, .4);
+    background-image: linear-gradient(120deg, white 5%, black 10%, white 15%);
+    background-repeat: no-repeat;
+    animation: sun 3s infinite;
+    -webkit-background-clip: text;
+}
+
+@keyframes sun {
+    from {
+        background-position: 300px;
+    }
+
+    to {
+        background-position: 1000px;
+    }
 }
 
 .history {
