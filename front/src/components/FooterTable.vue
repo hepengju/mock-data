@@ -406,7 +406,7 @@ function mouseDown(index) {
     dragState.start = index
     const table = document.getElementsByClassName('el-table')[0]
 
-    const tableHeight = table.clientHeight - 1 + 'px'
+    const tableHeight = table.clientHeight - 2 + 'px'
     const virtual01 = document.getElementsByClassName('virtual-left')
     const virtual02 = document.getElementsByClassName('virtual-right')
     for (let item of virtual01) {
@@ -636,7 +636,7 @@ function deleteHis(index) {
     position: absolute;
     height: 100%;
     border: none;
-    top: 0;
+    top: 1px;
 }
 
 .virtual-left {
@@ -646,7 +646,7 @@ function deleteHis(index) {
 
 .virtual-right {
     .virtual();
-    right: 0
+    right: 0;
 }
 
 // 激活时显示边框
