@@ -98,7 +98,7 @@
 
     <el-table ref="table" v-show="columns.length > 0" :data="data" border table-layout="auto"
         :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName"
-        @mousewheel.prevent="handleScroll">
+        @mousewheel="handleScroll">
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
