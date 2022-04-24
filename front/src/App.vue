@@ -86,6 +86,7 @@ bus.on(RANDOM_COLS, () => {
 
 // 禁止横向滚动条(右上角的挂件)
 body {
+    width: 100%;
     overflow-x: hidden;
 }
 
