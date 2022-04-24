@@ -102,10 +102,11 @@ body {
     }
 }
 
+// 矩形, 沿着右下角旋转
 .widget {
     position: absolute;
-    right: -56px;
-    top: 30px;
+    right: 0px;
+    top: 111px;
 
     width: 200px;
     height: 30px;
@@ -117,6 +118,7 @@ body {
     background-color: rgba(199, 29, 35, .3);
 
     text-align: center;
+    transform-origin: bottom right; // 右下角
     transform: rotateZ(45deg);
 
     &:hover {
