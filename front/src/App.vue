@@ -83,6 +83,11 @@ bus.on(RANDOM_COLS, () => {
     list-style: none;
 }
 
+// 禁止横向滚动条(右上角的挂件)
+body {
+    overflow-x: hidden;
+}
+
 // 弹性布局, 空白均分, 两侧边距
 .header {
     display: flex;
