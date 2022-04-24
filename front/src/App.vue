@@ -11,8 +11,8 @@
     <FooterTable />
 
     <!-- 官方挂件sbg图是个矩形, 左下角也会出现小手, 不好看, 自己模拟绘制一个-->
-    <div class="wrapper" @click="openGiteeUrl">
-        <div class="widget">Fork me on Gitee</div>
+    <div class="wrapper">
+        <div class="widget" @click="openGiteeUrl">Fork me on Gitee</div>
         <div class="trangle"></div> <!-- PC端没问题, 此三角形解决移动端显示问题 -->
     </div>
 </template>
@@ -108,9 +108,8 @@ body {
 
 // 矩形, 沿着右下角旋转
 .wrapper {
-    cursor: pointer;
-
     .widget {
+        cursor: pointer;
         position: absolute;
         right: 0;
         top: 111px;
