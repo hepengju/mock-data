@@ -12,6 +12,7 @@
 
     <!-- 官方挂件sbg图是个矩形, 左下角也会出现小手, 不好看, 自己模拟绘制一个-->
     <div class="widget" @click="openGiteeUrl">Fork me on Gitee</div>
+    <div class="trangle"></div>  <!-- PC端没问题, 此三角形解决移动端显示问题 -->
 </template>
 
 <script setup>
@@ -105,7 +106,7 @@ body {
 // 矩形, 沿着右下角旋转
 .widget {
     position: absolute;
-    right: 0px;
+    right: 0;
     top: 111px;
 
     width: 200px;
@@ -126,6 +127,22 @@ body {
         background-color: rgba(199, 29, 35, .6);
     }
 }
+
+.trangle {
+    position: absolute;
+    right: -21px;
+    top: 120px;
+
+    width: 0px;
+    height: 0px;
+    border: 21px solid #000;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+    border-left-color: transparent;
+    border-right-color: rgba(199, 29, 35, .3);
+
+}
+
 </style>
 
 
