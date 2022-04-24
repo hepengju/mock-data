@@ -10,12 +10,8 @@
 
     <FooterTable />
 
-    <div class="widget">
-        <a href='https://gitee.com/hepengju/mock-data' target="_blank">
-            <img src='https://gitee.com/hepengju/mock-data/widgets/widget_1.svg?color=c71d23'
-                alt='Fork me on Gitee' />
-        </a>
-    </div>
+    <!-- 官方挂件sbg图是个矩形, 左下角也会出现小手, 不好看, 自己模拟绘制一个-->
+    <div class="widget" @click="openGiteeUrl">Fork me on Gitee</div>
 </template>
 
 <script setup>
@@ -26,7 +22,7 @@ import FooterTable from './components/FooterTable.vue';
 import HeaderGen from './components/HeaderGen.vue';
 import HeaderMeta from './components/HeaderMeta.vue';
 import HeaderSample from './components/HeaderSample.vue';
-import { ADD_COLUMNS, RANDOM_COLS } from './consts';
+import { ADD_COLUMNS, RANDOM_COLS, GITEE_URL } from './consts';
 import bus from './plugins/bus';
 
 // 生成器(后台已经分组返回)
@@ -53,6 +49,11 @@ getGenMap().then(data => {
         });
     }
 })
+
+// 打开gitee地址
+function openGiteeUrl() {
+    window.open(GITEE_URL, '_blank')
+}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // 随机选择生成器
@@ -98,8 +99,25 @@ bus.on(RANDOM_COLS, () => {
 
 .widget {
     position: absolute;
-    right: 0;
-    top: 0;
+    right: -56px;
+    top: 30px;
+
+    width: 200px;
+    height: 30px;
+
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 30px;
+    background-color: rgba(199, 29, 35, .3);
+
+    text-align: center;
+    transform: rotateZ(45deg);
+
+    &:hover {
+        cursor: pointer;
+        background-color: rgba(199, 29, 35, .6);
+    }
 }
 </style>
 

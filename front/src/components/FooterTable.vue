@@ -131,7 +131,7 @@ import { ElMessage } from 'element-plus';
 import { nanoid } from 'nanoid';
 import { computed, getCurrentInstance, nextTick, onMounted, onUnmounted, onUpdated, reactive } from 'vue';
 import { downTable, getData, refreshTable } from '../apis';
-import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, MOVE_LENGTH as MOVE_SPEED, PRE_TABLS, RANDOM_COLS, ROW_ARRAY, ROW_COUNT, TIMER_COUNT, UPDATE_META } from '../consts';
+import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, MOVE_SPEED, PRE_TABLS, RANDOM_COLS, ROW_ARRAY, ROW_COUNT, TIMER_COUNT, UPDATE_META } from '../consts';
 import bus from '../plugins/bus';
 
 // 获取当前实例
