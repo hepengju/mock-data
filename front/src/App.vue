@@ -11,8 +11,10 @@
     <FooterTable />
 
     <!-- 官方挂件sbg图是个矩形, 左下角也会出现小手, 不好看, 自己模拟绘制一个-->
-    <div class="widget" @click="openGiteeUrl">Fork me on Gitee</div>
-    <div class="trangle"></div>  <!-- PC端没问题, 此三角形解决移动端显示问题 -->
+    <div class="wrapper" @click="openGiteeUrl">
+        <div class="widget">Fork me on Gitee</div>
+        <div class="trangle"></div> <!-- PC端没问题, 此三角形解决移动端显示问题 -->
+    </div>
 </template>
 
 <script setup>
@@ -105,45 +107,50 @@ body {
 }
 
 // 矩形, 沿着右下角旋转
-.widget {
-    position: absolute;
-    right: 0;
-    top: 111px;
+.wrapper {
+    cursor: pointer;
 
-    width: 200px;
-    height: 30px;
+    .widget {
+        position: absolute;
+        right: 0;
+        top: 111px;
 
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    line-height: 30px;
-    background-color: rgba(199, 29, 35, .3);
+        width: 200px;
+        height: 30px;
 
-    text-align: center;
-    transform-origin: bottom right; // 右下角
-    transform: rotateZ(45deg);
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 30px;
+        background-color: rgba(199, 29, 35, .3);
 
-    &:hover {
-        cursor: pointer;
+        text-align: center;
+        transform-origin: bottom right; // 右下角
+        transform: rotateZ(45deg);
+    }
+
+    .trangle {
+        position: absolute;
+        right: -21px;
+        top: 120px;
+
+        width: 0px;
+        height: 0px;
+        border: 21px solid #000;
+        border-top-color: transparent;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+        border-right-color: rgba(199, 29, 35, .3);
+    }
+
+    &:hover .widget {
         background-color: rgba(199, 29, 35, .6);
     }
+
+    &:hover .trangle {
+        border-right-color: rgba(199, 29, 35, .6);
+    }
 }
-
-.trangle {
-    position: absolute;
-    right: -21px;
-    top: 120px;
-
-    width: 0px;
-    height: 0px;
-    border: 21px solid #000;
-    border-top-color: transparent;
-    border-bottom-color: transparent;
-    border-left-color: transparent;
-    border-right-color: rgba(199, 29, 35, .3);
-
-}
-
 </style>
 
 
