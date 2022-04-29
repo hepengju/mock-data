@@ -635,7 +635,7 @@ function handleScroll(wheelEvent) {
 
         // 文字多余省略显示
         .cell {
-            max-width: 200px;
+            max-width: 222px; // objectId正好显示完整
 
             .text {
                 margin: 0 10px;

@@ -36,7 +36,7 @@ ul {
 // 按钮宽度和间距
 button {
     width: 90px;
-    margin: 4px;
+    margin: 3px;
 }
 
 // 生成器添加悬浮效果

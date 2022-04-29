@@ -66,6 +66,7 @@
                 <el-button type="primary" @click="confirmForm(meta)" :disabled="meta.isModified === undefined">确定
                 </el-button>
                 <el-button type="danger" @click="resetForm" :disabled="meta.isModified === undefined">重置</el-button>
+                <el-button type="info" @click="modifyScript(meta)" v-show="meta.isModified && meta.name == 'script'">修改脚本</el-button>
             </el-row>
         </el-form>
     </Card>
@@ -106,6 +107,9 @@ function resetForm() {
     meta.value = { ...bakMeta }
 }
 
+function modifyScript(meta){
+    // TODO 弹框显示js脚本(高亮), 且确定后保存到meta.script
+}
 </script>
 
 <style lang="less" scoped>
