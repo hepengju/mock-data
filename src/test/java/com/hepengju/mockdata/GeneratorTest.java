@@ -1,6 +1,7 @@
 package com.hepengju.mockdata;
 
 import com.hepengju.mockdata.common.DataConst;
+import com.hepengju.mockdata.core.GeneratorMeta;
 import com.hepengju.mockdata.generator.Generator;
 import com.hepengju.mockdata.generator.gen100_date.DateGenerator;
 import com.hepengju.mockdata.generator.gen100_date.DateTimeGenerator;
@@ -10,6 +11,7 @@ import com.hepengju.mockdata.generator.gen200_number.AutoIncrementGenerator;
 import com.hepengju.mockdata.generator.gen200_number.DoubleGenerator;
 import com.hepengju.mockdata.generator.gen200_number.IntegerGenerator;
 import com.hepengju.mockdata.generator.gen300_string.*;
+import com.hepengju.mockdata.generator.gen400_custom.ScriptGenerator;
 import com.hepengju.mockdata.generator.gen400_custom.gen410_name.*;
 import com.hepengju.mockdata.generator.gen400_custom.gen420_password.Md5Generator;
 import com.hepengju.mockdata.generator.gen400_custom.gen420_password.PasswordGenerator;
@@ -23,7 +25,6 @@ import com.hepengju.mockdata.generator.gen400_custom.gen450_card.IdentityCardGen
 import com.hepengju.mockdata.generator.gen400_custom.gen460_address.ChinaAddressGenerator;
 import com.hepengju.mockdata.generator.gen400_custom.gen460_address.ChinaCityGenerator;
 import com.hepengju.mockdata.generator.gen400_custom.gen460_address.ChinaProvinceGenerator;
-import com.hepengju.mockdata.core.GeneratorMeta;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -35,14 +36,32 @@ import java.util.Set;
  * 测试生成器
  *
  * @author hepengju
- *
  */
 public class GeneratorTest {
 
     int COUNT = 5;
 
     @Test
-    public void testFormatPrefixSuffix(){
+    public void testScriptGenerator() {
+        String script =
+                """
+                function scriptGenerator() {
+                    return Math.random() > 0.5 ? '+' : '-'
+                }
+
+                scriptGenerator();
+                """
+                ;
+
+        ScriptGenerator gen = new ScriptGenerator();
+        gen.setScript(script);
+        System.out.println(gen.generate());
+        System.out.println(gen.generate());
+        System.out.println(gen.generate());
+    }
+
+    @Test
+    public void testFormatPrefixSuffix() {
         DateTimeGenerator dt = new DateTimeGenerator();
         dt.setFormat("yyyyMMddHHmmss");
         dt.setPrefix("ORDER-");
@@ -64,9 +83,8 @@ public class GeneratorTest {
     }
 
 
-
     @Test
-    public void testGen100_date(){
+    public void testGen100_date() {
         testGenerator(new DateGenerator());
         testGenerator(new DateTimeGenerator());
         testGenerator(new LocalDateGenerator());
@@ -74,14 +92,14 @@ public class GeneratorTest {
     }
 
     @Test
-    public void testGen200_number(){
+    public void testGen200_number() {
         testGenerator(new IntegerGenerator());
         testGenerator(new DoubleGenerator());
         testGenerator(new AutoIncrementGenerator());
     }
 
     @Test
-    public void testGen300_string(){
+    public void testGen300_string() {
         testGenerator(new CodeGenerator());
         testGenerator(new NullGenerator());
         testGenerator(new RandomChineseGenerator());
@@ -92,7 +110,7 @@ public class GeneratorTest {
     }
 
     @Test
-    public void testGen410_name(){
+    public void testGen410_name() {
         testGenerator(new NameGenerator());
         testGenerator(new ChineseNameGenerator());
         testGenerator(new ChineseNamePinyinGenerator());
@@ -101,21 +119,21 @@ public class GeneratorTest {
     }
 
     @Test
-    public void testGen420_password(){
+    public void testGen420_password() {
         testGenerator(new PasswordGenerator());
         testGenerator(new Md5Generator());
         testGenerator(new Sha256Generator());
     }
 
     @Test
-    public void testGen430_phone(){
+    public void testGen430_phone() {
         testGenerator(new MobileGenerator());
         testGenerator(new TelephoneGenerator());
     }
 
     // 20200301 hepengju 生成的电话号码有负值, 原因是: 常量表中有不对的值 --> 修正完毕
     @Test
-    public void testTelephone(){
+    public void testTelephone() {
         Set<Integer> lengthSet = new HashSet<>();
         for (String phone : DataConst.telePhoneArea) {
             lengthSet.add(phone.length());
@@ -124,19 +142,19 @@ public class GeneratorTest {
     }
 
     @Test
-    public void testGen440_computer(){
+    public void testGen440_computer() {
         testGenerator(new EmailGenerator());
         testGenerator(new IPv4Generator());
         testGenerator(new UUIDGenerator());
     }
 
     @Test
-    public void testGen450_card(){
+    public void testGen450_card() {
         testGenerator(new IdentityCardGenerator());
     }
 
     @Test
-    public void testGen460_address(){
+    public void testGen460_address() {
         testGenerator(new ChinaAddressGenerator());
         testGenerator(new ChinaCityGenerator());
         testGenerator(new ChinaProvinceGenerator());
