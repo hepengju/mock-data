@@ -66,6 +66,9 @@ public class GeneratorMeta {
 
     @ApiModelProperty(value = "后缀", example = "S00")       // 20200222 后缀
     private String  suffix = "";
+
+    @ApiModelProperty(value = "js脚本", example = "S00")     // 20220430 js脚本
+    private String  script = "";
     //-----------------------------------------------------------
 
     public Generator toGenerator(){

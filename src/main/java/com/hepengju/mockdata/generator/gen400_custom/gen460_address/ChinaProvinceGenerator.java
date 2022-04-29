@@ -5,8 +5,9 @@ import com.hepengju.mockdata.common.DataConst;
 import com.hepengju.mockdata.generator.AbstractStringGenerator;
 import com.hepengju.mockdata.util.RandomUtil;
 import io.swagger.annotations.ApiModel;
+import org.springframework.core.annotation.Order;
 
-@ApiModel("中国省份生成器") // @Order(463)
+@ApiModel("中国省份生成器") @Order(463)
 public class ChinaProvinceGenerator extends AbstractStringGenerator {
 
 	@Override

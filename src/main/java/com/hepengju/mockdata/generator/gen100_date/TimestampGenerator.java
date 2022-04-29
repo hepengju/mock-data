@@ -13,7 +13,7 @@ import java.util.Date;
 @ApiModel("时间戳生成器") @Data @Order(103)
 public class TimestampGenerator extends AbstractNumberGenerator<Long> {
 
-	private String min = "1900-01-01 00:00:00";
+	private String min = "2000-01-01 00:00:00";
 	private String max = "2100-12-31 23:59:59";
 	private String format = BaseConst.DATE_TIME_FORMAT;
 
