@@ -46,6 +46,12 @@ public class GeneratorController {
         return genService.getData(meta, sampleSize);
     }
 
+    @ApiOperation("获取10个数据-POST请求")
+    @PostMapping("fetchData")
+    public List<String> fetchData(@RequestBody GeneratorMeta meta) {
+        return genService.getData(meta, GeneratorMeta.SAMPLE_SIZE);
+    }
+
     @ApiOperation("获取可用生成器名称")
     @GetMapping("getGenNameList")
     public Set<String> getGenNameList() {

@@ -130,7 +130,7 @@ import dayjs from 'dayjs';
 import { ElMessage } from 'element-plus';
 import { nanoid } from 'nanoid';
 import { computed, getCurrentInstance, nextTick, onMounted, onUnmounted, onUpdated, reactive } from 'vue';
-import { downTable, getData, refreshTable } from '../apis';
+import { downTable, fetchData, refreshTable } from '../apis';
 import { ADD_COLUMNS, HOVER_GEN, ITEM_KEY, MOVE_SPEED, PRE_TABLS, RANDOM_COLS, ROW_ARRAY, ROW_COUNT, TIMER_COUNT, UPDATE_META } from '../consts';
 import bus from '../plugins/bus';
 
@@ -283,7 +283,7 @@ bus.on(UPDATE_META, meta => {
 
     // 发送请求前删除多余数据
     deleteNotNeedData(params)
-    getData(params).then(data => {
+    fetchData(params).then(data => {
         columns.forEach(col => {
             if (col.key != meta.columnKey) return;
 
