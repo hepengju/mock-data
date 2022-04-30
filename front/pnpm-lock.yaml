@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@element-plus/icons-vue': ^1.1.4
   '@vitejs/plugin-vue': ^2.3.0
+  ace-builds: ^1.4.14
   axios: ^0.26.1
   dayjs: ^1.11.1
   element-plus: ^2.1.8
@@ -15,9 +16,11 @@ specifiers:
   unplugin-vue-components: ^0.18.5
   vite: ^2.9.0
   vue: ^3.2.25
+  vue3-ace-editor: ^2.2.2
 
 dependencies:
   '@element-plus/icons-vue': 1.1.4_vue@3.2.31
+  ace-builds: 1.4.14
   axios: 0.26.1
   dayjs: 1.11.1
   element-plus: 2.1.8_vue@3.2.31
@@ -25,6 +28,7 @@ dependencies:
   mitt: 3.0.0
   nanoid: 3.3.2
   vue: 3.2.31
+  vue3-ace-editor: 2.2.2
 
 devDependencies:
   '@vitejs/plugin-vue': 2.3.1_vite@2.9.1+vue@3.2.31
@@ -230,6 +234,10 @@ packages:
     dependencies:
       vue: 3.2.31
       vue-demi: 0.12.5_vue@3.2.31
+    dev: false
+
+  /ace-builds/1.4.14:
+    resolution: {integrity: sha512-NBOQlm9+7RBqRqZwimpgquaLeTJFayqb9UEPtTkpC3TkkwDnlsT/TwsCC0svjt9kEZ6G9mH5AEOHSz6Q/HrzQQ==}
     dev: false
 
   /anymatch/3.1.2:
@@ -880,6 +888,10 @@ packages:
       picomatch: 2.3.1
     dev: true
 
+  /resize-observer-polyfill/1.5.1:
+    resolution: {integrity: sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==}
+    dev: false
+
   /resolve/1.22.0:
     resolution: {integrity: sha512-Hhtrw0nLeSrFQ7phPp4OOcVjLPIeMnRlr5mcnVuMe7M/7eBn98A3hmFRLoFo3DLZkivSYwhRUJTyPyWAk56WLw==}
     hasBin: true
@@ -1075,6 +1087,14 @@ packages:
       '@vue/runtime-dom': 3.2.31
       '@vue/server-renderer': 3.2.31_vue@3.2.31
       '@vue/shared': 3.2.31
+    dev: false
+
+  /vue3-ace-editor/2.2.2:
+    resolution: {integrity: sha512-fZ6OWosbU+odLrtrcGC/536QjCigujYJB0Hf6/tBp+ef/ohTadwQAqyBlVzOmvrmzZyubphpV9zkaZcx5Fuivw==}
+    dependencies:
+      ace-builds: 1.4.14
+      resize-observer-polyfill: 1.5.1
+      vue: 3.2.31
     dev: false
 
   /webpack-virtual-modules/0.4.3:

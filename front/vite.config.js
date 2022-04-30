@@ -19,7 +19,7 @@ export default defineConfig({
     server: {
         proxy: {
             '/getGenMap': server_url,
-            '/getData': server_url,
+            '/fetchData': server_url,
             '/refreshTable': server_url,
             '/downTable': server_url,
         }

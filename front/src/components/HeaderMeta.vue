@@ -63,23 +63,46 @@
                     </el-form-item>
                 </el-col>
 
-                <el-button type="primary" @click="confirmForm(meta)" :disabled="meta.isModified === undefined">确定
+                <el-button type="primary" @click="confirmForm" :disabled="meta.isModified === undefined">确定
                 </el-button>
                 <el-button type="danger" @click="resetForm" :disabled="meta.isModified === undefined">重置</el-button>
-                <el-button type="info" @click="modifyScript(meta)" v-show="meta.isModified && meta.name == 'script'">修改脚本</el-button>
+                <el-button type="info" @click="dialogVisible = true" v-show="meta.isModified && meta.name == 'script'">
+                    编辑脚本</el-button>
             </el-row>
         </el-form>
     </Card>
+
+    <el-dialog v-model="dialogVisible" draggable title="编辑脚本" width="60%">
+        <v-ace-editor v-model:value="meta.script" lang="javascript" theme="gruvbox" style="height: 300px" />
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button @click="dialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="confirmScript">确定</el-button>
+            </span>
+        </template>
+    </el-dialog>
 </template>
 
 <script setup>
+import { VAceEditor } from 'vue3-ace-editor';
+import 'ace-builds/src-noconflict/mode-javascript';
+import 'ace-builds/src-noconflict/theme-gruvbox';
+import ace from 'ace-builds';
+
 import { ref } from 'vue';
 import { HOVER_GEN, UPDATE_META } from '../consts';
 import bus from '../plugins/bus';
 
+// https://github.com/CarterLi/vue3-ace-editor/tree/gh-pages/demo-source
+// https://www.cnblogs.com/China-Dream/p/13883153.html
+
+ace.config.set('showLineNumbers', false)
+ace.config.set('fontSize', 20)
+
 defineProps(['name', 'title', 'width'])
 
-let meta = ref({
+const dialogVisible = ref(false)
+const meta = ref({
     columnTitle: '',
     columnName: '',
     min: null,
@@ -89,26 +112,28 @@ let meta = ref({
     format: '',
     code: null,
     codeMulti: false,
-    color: '#fff'
+    color: '#fff',
+    script: ''
 })
 
-// 此处的备份和保存, 都采用复制1份的操作
+// 此处的备份和保存, 都采用复制的操作
 let bakMeta = {}
 bus.on(HOVER_GEN, gen => {
     bakMeta = { ...gen }
     meta.value = { ...gen }
 })
 
-function confirmForm(meta) {
-    bus.emit(UPDATE_META, { ...meta })
+function confirmForm() {
+    bus.emit(UPDATE_META, { ...meta.value })
 }
 
 function resetForm() {
     meta.value = { ...bakMeta }
 }
 
-function modifyScript(meta){
-    // TODO 弹框显示js脚本(高亮), 且确定后保存到meta.script
+function confirmScript() {
+    dialogVisible.value = false
+    bus.emit(UPDATE_META, { ...meta.value })
 }
 </script>
 
