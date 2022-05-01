@@ -22,6 +22,7 @@ export default defineConfig({
             '/fetchData': server_url,
             '/refreshTable': server_url,
             '/downTable': server_url,
+            '/evalScript': server_url,
         }
     }
 })

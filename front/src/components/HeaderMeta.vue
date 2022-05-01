@@ -72,12 +72,18 @@
         </el-form>
     </Card>
 
-    <el-dialog v-model="dialogVisible" draggable title="编辑脚本" width="60%">
-        <v-ace-editor v-model:value="meta.script" lang="javascript" theme="gruvbox" style="height: 300px" />
+    <el-dialog v-model="dialogVisible" draggable title="编辑脚本" width="50%" :before-close="handleClose">
+        <v-ace-editor v-model:value="meta.script" lang="javascript" theme="iplastic"
+             :options="{showLineNumbers : false, fontSize: 18}"
+            style="height: 300px" />
+        <div class="editor-seperator" v-show="evalResult">
+            评估结果： {{ evalResult }}
+        </div>
+
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="dialogVisible = false">取消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">评估</el-button>
+                <el-button @click="cancelScript">取消</el-button>
+                <el-button type="warning" @click="evalScriptNow">评估</el-button>
                 <el-button type="primary" @click="confirmScript">确定</el-button>
             </span>
         </template>
@@ -85,24 +91,21 @@
 </template>
 
 <script setup>
-import { VAceEditor } from 'vue3-ace-editor';
-import 'ace-builds/src-noconflict/mode-javascript';
-import 'ace-builds/src-noconflict/theme-gruvbox';
-import ace from 'ace-builds';
-
-import { ref } from 'vue';
-import { HOVER_GEN, UPDATE_META } from '../consts';
-import bus from '../plugins/bus';
-
 // ACE脚本编辑器
 // https://github.com/CarterLi/vue3-ace-editor/tree/gh-pages/demo-source
 // https://www.cnblogs.com/China-Dream/p/13883153.html
+import { VAceEditor } from 'vue3-ace-editor';
+import 'ace-builds/src-noconflict/mode-javascript';
+import 'ace-builds/src-noconflict/theme-iplastic';
+import { ref } from 'vue';
+import { evalScript } from '../apis/';
+import { HOVER_GEN, UPDATE_META } from '../consts';
+import bus from '../plugins/bus';
 
-// ace.config.set('showLineNumbers', false)
-ace.config.set('fontSize', 20)
 
 defineProps(['name', 'title', 'width'])
 
+const evalResult = ref('')
 const dialogVisible = ref(false)
 const meta = ref({
     columnTitle: '',
@@ -125,16 +128,55 @@ bus.on(HOVER_GEN, gen => {
     meta.value = { ...gen }
 })
 
+/**
+ * 确认元数据, 并重新请求数据
+ */
 function confirmForm() {
     bus.emit(UPDATE_META, { ...meta.value })
 }
 
+/**
+ * 重置元数据表格
+ */
 function resetForm() {
     meta.value = { ...bakMeta }
 }
 
+/**
+ * 取消按钮
+ */
+function cancelScript() {
+    dialogVisible.value = false
+    evalResult.value = ''
+}
+
+/**
+ * 关闭脚本编辑窗口后清空评估结果
+ */
+function handleClose(done) {
+    evalResult.value = ''
+    done()
+}
+
+/**
+ * 评估脚本
+ */
+function evalScriptNow() {
+    evalScript(meta.value.script).then(data => {
+        if (typeof (data[0]) == 'string' && data[0].startsWith('脚本生成器错误')) {
+            evalResult.value = data[0]
+        } else {
+            evalResult.value = data.join(' , ')
+        }
+    })
+}
+
+/**
+ * 确认脚本后刷新数据
+ */
 function confirmScript() {
     dialogVisible.value = false
+    evalResult.value = ''
     bus.emit(UPDATE_META, { ...meta.value })
 }
 </script>
@@ -150,5 +192,11 @@ function confirmScript() {
     input {
         color: blue;
     }
+}
+
+.editor-seperator {
+    margin-top: 20px;
+    font-size: 16px;
+    color: red;
 }
 </style>
