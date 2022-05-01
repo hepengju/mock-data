@@ -77,6 +77,7 @@
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="dialogVisible = false">评估</el-button>
                 <el-button type="primary" @click="confirmScript">确定</el-button>
             </span>
         </template>
@@ -93,10 +94,11 @@ import { ref } from 'vue';
 import { HOVER_GEN, UPDATE_META } from '../consts';
 import bus from '../plugins/bus';
 
+// ACE脚本编辑器
 // https://github.com/CarterLi/vue3-ace-editor/tree/gh-pages/demo-source
 // https://www.cnblogs.com/China-Dream/p/13883153.html
 
-ace.config.set('showLineNumbers', false)
+// ace.config.set('showLineNumbers', false)
 ace.config.set('fontSize', 20)
 
 defineProps(['name', 'title', 'width'])
