@@ -13,11 +13,16 @@ import org.springframework.core.annotation.Order;
  *
  * @author hepengju
  */
-@Data @ApiModel("js脚本生成器") @Order(499) @Slf4j
+@Data @ApiModel("JS脚本生成器") @Order(499) @Slf4j
 public class ScriptGenerator extends AbstractGenerator<Object> {
 
     // 动态脚本生成器
     private String script = """
+            /*
+             * 服务端采用graalvm解析执行, 支持ECMAScript 2021
+             * <p> 脚本直接评估出结果
+             * @see https://www.graalvm.org/javascript/
+             * /
             function scriptGenerator() {
                 return Math.random() > 0.5 ? '+' : '-'
             }

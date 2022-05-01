@@ -2,6 +2,7 @@ package com.hepengju.mockdata.web;
 
 import com.hepengju.mockdata.core.GeneratorMeta;
 import com.hepengju.mockdata.core.GeneratorParam;
+import com.hepengju.mockdata.generator.gen400_custom.ScriptGenerator;
 import com.hepengju.mockdata.service.GeneratorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,7 +38,6 @@ public class GeneratorController {
         genService.downTable(param);
     }
 
-    // -------------------- 微信接口 --------------------
     @ApiOperation("获取数据")
     @GetMapping("getData")
     public List<String> getData(GeneratorMeta meta,
@@ -58,4 +58,11 @@ public class GeneratorController {
         return genService.getMetaMap().keySet();
     }
 
+    @ApiOperation("评估脚本")
+    @PostMapping("evalScript")
+    public Object evalScript(@RequestBody String script) {
+        ScriptGenerator gen = new ScriptGenerator();
+        gen.setScript(script);
+        return gen.generate();
+    }
 }
