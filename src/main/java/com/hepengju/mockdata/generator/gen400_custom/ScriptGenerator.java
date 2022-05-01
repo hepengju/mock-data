@@ -22,7 +22,7 @@ public class ScriptGenerator extends AbstractGenerator<Object> {
              * 服务端采用graalvm解析执行, 支持ECMAScript 2021
              * <p> 脚本直接评估出结果
              * @see https://www.graalvm.org/javascript/
-             * /
+             */
             function scriptGenerator() {
                 return Math.random() > 0.5 ? '+' : '-'
             }

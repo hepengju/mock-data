@@ -45,6 +45,9 @@ public class GeneratorTest {
     public void testScriptGenerator() {
         String script =
                 """
+                /* 
+                 * 呵呵
+                 */
                 function scriptGenerator() {
                     return Math.random() > 0.5 ? '+' : '-'
                 }
@@ -55,9 +58,7 @@ public class GeneratorTest {
 
         ScriptGenerator gen = new ScriptGenerator();
         gen.setScript(script);
-        System.out.println(gen.generate());
-        System.out.println(gen.generate());
-        System.out.println(gen.generate());
+        System.out.println(gen.generateList(10));
     }
 
     @Test

@@ -9,7 +9,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,10 +66,6 @@ public class GeneratorController {
     public List<Object> evalScript(@RequestBody String script) {
         ScriptGenerator gen = new ScriptGenerator();
         gen.setScript(script);
-        List<Object> result = new ArrayList<>(SAMPLE_SIZE);
-        for (int i = 0; i < SAMPLE_SIZE; i++) {
-            result.add(gen.generate());
-        }
-        return result;
+        return gen.generateList(SAMPLE_SIZE);
     }
 }
