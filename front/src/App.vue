@@ -1,8 +1,8 @@
 <template>
     <div class="header">
         <HeaderGen title="日期和数字" width="200px" :gens="dataList.date_number" name="date_number" />
-        <HeaderGen title="字符生成器" width="220px" :gens="dataList.string" name="string" />
-        <HeaderGen title="定制生成器" width="440px" :gens="dataList.custom" name="custom" />
+        <HeaderGen title="字符生成器" width="300px" :gens="dataList.string" name="string" />
+        <HeaderGen title="定制生成器" width="600px" :gens="dataList.custom" name="custom" />
 
         <HeaderSample name="sample" title="样例数据" />
         <HeaderMeta name="meta" title="详细配置" />

@@ -1,5 +1,5 @@
 <template>
-    <el-row style="margin: 10px;">
+    <el-row style="margin: 5px;">
         <!-- 
             // flex布局, 左边按钮, 右边配置
             // margin-right 不设置的话默认是0，父容器width 定宽之后，margin-right取值为 auto ，则自动占据了剩余的全部宽度
