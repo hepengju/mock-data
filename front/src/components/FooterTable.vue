@@ -98,7 +98,7 @@
 
     <el-table ref="table" v-show="columns.length > 0" :data="data" border table-layout="auto"
         :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName"
-        @mousewheel.prevent="handleScroll">
+        @wheel="handleScroll">
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
@@ -544,7 +544,7 @@ onMounted(() => {
 function handleScroll(wheelEvent) {
     // 如果水平滚动条没有出现, 则什么都不处理
     if (horizontalBar.style.display == 'none') return
-
+    
     moveLeft = wheelEvent.deltaY > 0 ? moveLeft + MOVE_SPEED : moveLeft - MOVE_SPEED
     const maxMove = tableBody.offsetWidth - horizontalBar.offsetWidth
 
@@ -552,6 +552,8 @@ function handleScroll(wheelEvent) {
     if (moveLeft < 0) moveLeft = 0
     if (moveLeft > maxMove) moveLeft = maxMove
     proxy.$refs.table.setScrollLeft(moveLeft)
+
+    wheelEvent.preventDefault()
 }
 </script>
 
