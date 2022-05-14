@@ -62,7 +62,7 @@
                 </el-form-item>
 
                 <el-form-item label="行数">
-                    <el-input-number v-model="config.sampleSize" :min="10" :max="100000" :step="100" />
+                    <el-input-number v-model="config.sampleSize" :min="10" :max="10000" :step="100" />
                 </el-form-item>
 
                 <el-button type="primary" @click="downData" style="width: 80px;" :icon="Download"
