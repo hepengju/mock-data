@@ -1,5 +1,6 @@
 package com.hepengju.mockdata.service;
 
+import cn.hutool.core.util.StrUtil;
 import com.hepengju.mockdata.GeneratorScan;
 import com.hepengju.mockdata.generator.Generator;
 import com.hepengju.mockdata.core.GeneratorMeta;
@@ -18,14 +19,16 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
-@Service @Slf4j @Data
-public class GeneratorService{
+@Service
+@Slf4j
+@Data
+public class GeneratorService {
 
     private List<Generator> genList;
     private Map<String, GeneratorMeta> metaMap;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         genList = GeneratorScan.getGeneratorList();
         metaMap = new LinkedHashMap<>(genList.size() * 2);
         List<GeneratorMeta> metaList = genList.stream().map(Generator::toGeneratorMeta).collect(toList());
@@ -46,7 +49,7 @@ public class GeneratorService{
 
     private GeneratorMeta nameToMeta(String name) {
         GeneratorMeta meta = metaMap.get(name);
-        if(meta == null) throw new RuntimeException(String.format("生成器[%s]不存在", name));
+        if (meta == null) throw new RuntimeException(String.format("生成器[%s]不存在", name));
         return meta;
     }
 
@@ -67,7 +70,8 @@ public class GeneratorService{
             meta.setClassName(metaMap.get(meta.getName()).getClassName());
         } catch (Exception e) {
             for (String key : metaMap.keySet()) {
-                if(meta.getName().toLowerCase().contains(key.toLowerCase())) {
+                // if(meta.getName().toLowerCase().contains(key.toLowerCase())) {
+                if (StrUtil.equalsIgnoreCase(meta.getName(), key.toLowerCase())) {
                     meta = metaMap.get(key);
                     break;
                 }
@@ -80,15 +84,15 @@ public class GeneratorService{
     /**
      * 刷新表格
      */
-    public List<Map<String,String>> refreshTable(GeneratorParam param) {
+    public List<Map<String, String>> refreshTable(GeneratorParam param) {
         int sampleSize = param.getSampleSize();
         List<String> columnKeyList = param.getMetaList().stream().map(GeneratorMeta::getColumnKey).collect(toList());
         List<GeneratorMeta> metaList = paramToMetaList(param);
         List<Generator> genList = metaList.stream().map(GeneratorMeta::toGenerator).collect(toList());
 
-        List<Map<String,String>> result = new ArrayList<>(sampleSize);
+        List<Map<String, String>> result = new ArrayList<>(sampleSize);
         for (int i = 0; i < sampleSize; i++) {
-            Map<String,String> rowMap  = new LinkedHashMap<>(metaList.size());
+            Map<String, String> rowMap = new LinkedHashMap<>(metaList.size());
             for (int j = 0; j < genList.size(); j++) {
                 String key = columnKeyList.get(j);
                 String value = genList.get(j).generateString();
