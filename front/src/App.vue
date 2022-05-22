@@ -8,7 +8,9 @@
         <HeaderMeta name="meta" title="详细配置" />
     </div>
 
-    <FooterTable />
+    <div class="footer">
+        <FooterTable />
+    </div>
 
     <!-- 官方挂件sbg图是个矩形, 左下角也会出现小手, 不好看, 自己模拟绘制一个-->
     <div class="wrapper">
@@ -44,7 +46,7 @@ getGenMap().then(data => {
         dataList[genType].forEach(gen => {
             if (genType == 'string') gen.color = '#19be6b'         // 字符: 按钮 danger  的颜色
             else if (genType == 'custom') gen.color = '#409eff'         // 定制: 按钮 success 的颜色
-            else if (gen.name.startsWith('date') || gen.name.startsWith('timestamp') ) gen.color = '#909399' // 日期: 按钮 info    的颜色
+            else if (gen.name.startsWith('date') || gen.name.startsWith('timestamp')) gen.color = '#909399' // 日期: 按钮 info    的颜色
             else gen.color = '#ff9900'                                  // 数字: 按钮 warning 的颜色
 
             // 记录所有生成器
@@ -66,7 +68,7 @@ bus.on(RANDOM_COLS, () => {
     while (gens.length == 0) {
         for (let name in gensMap) {
             // 目前总共31个生成器, 预计生成10个, 那么遍历所有, 30%概率差不多
-            if (Math.random() > 0.7) {
+            if (Math.random() > 0.8) {
                 gens.push(gensMap[name])
             }
         }
@@ -92,7 +94,9 @@ body {
     overflow-x: hidden;
 }
 
+
 // 弹性布局, 空白均分, 两侧边距
+
 .header {
     display: flex;
     justify-content: space-evenly;
@@ -106,7 +110,13 @@ body {
     }
 }
 
-// 矩形, 沿着右下角旋转
+.footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}
+
+// Gitee徽章 矩形, 沿着右下角旋转
 .wrapper {
     .widget {
         cursor: pointer;
