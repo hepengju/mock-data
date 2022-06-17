@@ -2,9 +2,8 @@ spring:
   web:
     resources:
       static-locations:
-        - "file:/root/app/mock-data/front/dist"           # linux
-        - "file:/Users/hepengju/vcs/mock-data/front/dist" # mac
-        - "file:D:/git/demo/mock-data/front/dist"         # windows
+        - "file:/root/app/mock-data/front/dist"      # linux
+        - "file:D:/git/mock-data/front/dist"         # windows
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher  # spring boot 2.6.x结合swagger3.0.0不兼容问题
