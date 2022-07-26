@@ -122,6 +122,10 @@
             </template>
         </el-table-column>
     </el-table>
+
+    <!-- 添加备案号 -->
+    <a class="beian" v-show="columns.length == 0" href="https://beian.miit.gov.cn/" target="_blank">沪ICP备19035896号-2</a>
+
 </template>
 
 <script setup>
@@ -748,5 +752,14 @@ function handleScroll(wheelEvent) {
             }
         }
     }
+}
+
+.beian {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    text-decoration: none;
+    font-size: 12px;
+    color: gray;
 }
 </style>
