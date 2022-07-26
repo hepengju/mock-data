@@ -1,10 +1,22 @@
+# 静态资源外置化(便于单独打包)
 spring:
   web:
     resources:
       static-locations:
         - "file:/root/app/mock-data/front/dist"      # linux
         - "file:D:/git/mock-data/front/dist"         # windows
+
+  # spring boot 2.6.x结合swagger3.0.0不兼容问题
   mvc:
     pathmatch:
-      matching-strategy: ant_path_matcher  # spring boot 2.6.x结合swagger3.0.0不兼容问题
+      matching-strategy: ant_path_matcher
+
+# https配置
+server:
+  port: 443
+  ssl:
+    enabled: true
+    key-store: classpath:hepengju.com.jks
+    key-store-type: JKS
+    key-store-password: 5l69bk1gqa3563
 
