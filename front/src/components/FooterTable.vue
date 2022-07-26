@@ -716,7 +716,7 @@ function handleScroll(wheelEvent) {
 
 .history {
     position: fixed;
-    bottom: 20px;
+    bottom: 40px;
     margin: 0 20px;
 
     &>div {
