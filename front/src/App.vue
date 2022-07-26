@@ -11,7 +11,7 @@
     <div class="footer">
         <FooterTable />
     </div>
-
+    
     <!-- 官方挂件sbg图是个矩形, 左下角也会出现小手, 不好看, 自己模拟绘制一个-->
     <div class="wrapper">
         <div class="widget" @click="openGiteeUrl">Fork me on Gitee</div>
@@ -160,6 +160,8 @@ body {
         border-right-color: rgba(199, 29, 35, .6);
     }
 }
+
+
 </style>
 
 
