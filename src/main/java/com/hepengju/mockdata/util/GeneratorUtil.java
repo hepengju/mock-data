@@ -17,6 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * 生成器工具类
  */
@@ -169,19 +171,19 @@ public class GeneratorUtil {
         fileName = fileName + "-" + DateUtil.yyyyMMddHHmmss();
         if ("sql".equals(fileFormat)) {
             String result = PrintUtil.printInsert(tableName, columnNameList, dataList, true);
-            WebUtil.handleFileDownload(fileName + ".sql", result.getBytes(StandardCharsets.UTF_8));
+            WebUtil.handleFileDownload(fileName + ".sql", result.getBytes(UTF_8));
             return;
         }
 
         if ("csv".equals(fileFormat)) {
             String result = PrintUtil.printCSV(dataList);
-            WebUtil.handleFileDownload(fileName + ".csv", result.getBytes(StandardCharsets.UTF_8));
+            WebUtil.handleFileDownload(fileName + ".csv", result.getBytes(UTF_8));
             return;
         }
 
         if ("tsv".equals(fileFormat)) {
             String result = PrintUtil.printTSV(dataList);
-            WebUtil.handleFileDownload(fileName + ".tsv", result.getBytes(StandardCharsets.UTF_8));
+            WebUtil.handleFileDownload(fileName + ".tsv", result.getBytes(UTF_8));
             return;
         }
 

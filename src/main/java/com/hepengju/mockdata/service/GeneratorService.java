@@ -6,11 +6,11 @@ import com.hepengju.mockdata.generator.Generator;
 import com.hepengju.mockdata.core.GeneratorMeta;
 import com.hepengju.mockdata.core.GeneratorParam;
 import com.hepengju.mockdata.util.GeneratorUtil;
+import jakarta.annotation.PostConstruct;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
