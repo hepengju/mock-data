@@ -36,6 +36,7 @@
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
             <version>3.5.2</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.github.xiaoymin/knife4j-spring-boot-starter -->
@@ -43,6 +44,7 @@
             <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-spring-boot-starter</artifactId>
             <version>3.0.3</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
@@ -99,8 +101,8 @@
             <version>2.0.3</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.graalvm.js/js
-         使用graalvm, 无需再添加js引擎
+        <!--
+        graalvm 通过 gu install js 安装
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js</artifactId>
