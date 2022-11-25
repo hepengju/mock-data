@@ -1,13 +1,13 @@
 # https://docs.spring.io/spring-boot/docs/current/reference/html/container-images.html#container-images
 # https://github.com/graalvm/container/pkgs/container/graalvm-ce/47277487?tag=ol9-java17
-FROM ghcr.io/graalvm/graalvm-ce:ol9-java17 as builder
+FROM springci/graalvm-ce:java17-0.12.x as builder
 WORKDIR application
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} application.jar
 COPY front/dist front/dist
 RUN java -Djarmode=layertools -jar application.jar extract
 
-FROM ghcr.io/graalvm/graalvm-ce:ol9-java17
+FROM springci/graalvm-ce:java17-0.12.x
 WORKDIR application
 COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/spring-boot-loader/ ./
