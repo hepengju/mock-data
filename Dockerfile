@@ -4,7 +4,6 @@ FROM springci/graalvm-ce:java17-0.12.x as builder
 WORKDIR application
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} application.jar
-COPY front/dist front/dist
 RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM springci/graalvm-ce:java17-0.12.x
@@ -13,4 +12,5 @@ COPY --from=builder application/dependencies/ ./
 COPY --from=builder application/spring-boot-loader/ ./
 COPY --from=builder application/snapshot-dependencies/ ./
 COPY --from=builder application/application/ ./
+COPY front/dist /root/app/mock-data/front/dist
 ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
