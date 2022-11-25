@@ -3,6 +3,7 @@ spring:
   web:
     resources:
       static-locations:
+        - "file:/app/static"                         # docker
         - "file:/root/app/mock-data/front/dist"      # linux
         - "file:D:/git/mock-data/front/dist"         # windows
 
