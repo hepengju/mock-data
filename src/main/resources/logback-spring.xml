@@ -4,7 +4,7 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
     <springProperty scope="context" name="appname" source="spring.application.name" defaultValue="mock-data"/>
-    <springProperty scope="context" name="loghome" source="log.home" defaultValue="/root/app/log"/>
+    <springProperty scope="context" name="loghome" source="log.home" defaultValue="/app/log"/>
     <springProperty scope="context" name="pattern" source="pattern"  defaultValue="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n"/>
 
     <!-- INFO级别日志: 保留60天, 文件最大为100MB, 滚动压缩为zip -->
