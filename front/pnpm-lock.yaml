@@ -12,6 +12,7 @@ specifiers:
   lodash: ^4.17.21
   mitt: ^3.0.0
   nanoid: ^3.3.4
+  numeral: ^2.0.6
   unplugin-auto-import: ^0.6.9
   unplugin-vue-components: ^0.18.5
   vite: ^2.9.15
@@ -28,6 +29,7 @@ dependencies:
   lodash: 4.17.21
   mitt: 3.0.0
   nanoid: 3.3.4
+  numeral: 2.0.6
   vue: 3.2.45
   vue-router: 4.1.6_vue@3.2.45
   vue3-ace-editor: 2.2.2
@@ -887,6 +889,10 @@ packages:
 
   /normalize-wheel-es/1.2.0:
     resolution: {integrity: sha512-Wj7+EJQ8mSuXr2iWfnujrimU35R2W4FAErEyTmJoJ7ucwTn2hOUSsRehMb5RSYkxXGTM7Y9QpvPmp++w5ftoJw==}
+    dev: false
+
+  /numeral/2.0.6:
+    resolution: {integrity: sha512-qaKRmtYPZ5qdw4jWJD6bxEf1FJEqllJrwxCLIm0sQU/A7v2/czigzOb+C2uSiFsa9lBUzeH7M1oK+Q+OLxL3kA==}
     dev: false
 
   /parse-node-version/1.0.1:
