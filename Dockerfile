@@ -5,6 +5,6 @@ COPY target/*.jar app.jar
 RUN jar -xf app.jar && rm app.jar
 ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
 
-# docker build -t mock-data:3.0.0 .
-# docker run -d --name mock-data -p 443:443 mock-data:3.0.0
+# docker build -t mock-data:3.1 .
+# docker run -d --name mock-data -p 443:443 mock-data:3.1
 # docker exec -it mock-data bash
