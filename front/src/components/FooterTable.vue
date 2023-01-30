@@ -40,6 +40,14 @@
                     <el-button type="danger" :icon="Delete" @click="deleteAll">清空</el-button>
                 </el-tooltip>
             </el-button-group>
+
+            <el-button-group style="margin-left: 20px">
+                <el-tooltip content="点击打开雪花主键分析页面" placement="top-start">
+                    <router-link to="/snow" target="_blank" style="text-decoration: none;">
+                        <el-button type="primary" :icon="Link">雪花主键分析</el-button>
+                    </router-link>
+                </el-tooltip>
+            </el-button-group>
         </div>
         <div class="config" v-show="columns.length > 0">
             <el-form ref="formRef" :model="config" label-width="40px" :inline="true">
@@ -97,13 +105,12 @@
     </div>
 
     <el-table ref="table" v-show="columns.length > 0" :data="data" border table-layout="auto"
-        :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName"
-        @wheel="handleScroll">
+        :cell-class-name="cellClassName" :header-cell-class-name="headerCellClassName" @wheel="handleScroll">
         <el-table-column type="index" label="#" align="center" fixed="left" />
         <el-table-column v-for="(col, index) in columns" :prop="col.key" :label="col.label">
             <template #default="scope">
                 <div class="text" :style="{ color: col.color }" @mousemove="mouseMove(index)">{{
-                        scope.row[col.key]
+                    scope.row[col.key]
                 }}</div>
             </template>
 
@@ -129,7 +136,7 @@
 </template>
 
 <script setup>
-import { ArrowDown, Close, CloseBold, Delete, Download, Orange, Present, Refresh, Wallet } from '@element-plus/icons-vue';
+import { ArrowDown, Close, CloseBold, Delete, Download, Orange, Present, Refresh, Wallet, Link } from '@element-plus/icons-vue';
 import dayjs from 'dayjs';
 import { ElMessage } from 'element-plus';
 import { nanoid } from 'nanoid';
@@ -548,7 +555,7 @@ onMounted(() => {
 function handleScroll(wheelEvent) {
     // 如果水平滚动条没有出现, 则什么都不处理
     if (horizontalBar.style.display == 'none') return
-    
+
     moveLeft = wheelEvent.deltaY > 0 ? moveLeft + MOVE_SPEED : moveLeft - MOVE_SPEED
     const maxMove = tableBody.offsetWidth - horizontalBar.offsetWidth
 
