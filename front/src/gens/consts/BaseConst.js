@@ -8,5 +8,5 @@ export default class BaseConst {
     static DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm:ss";
     static DATE_FORMAT      = "YYYY-MM-DD";
 
-    static EXCEL_EXT_NAME_LIST = Arrays.asList("xls", "xlsx", "xlsm");
+    // static EXCEL_EXT_NAME_LIST = Arrays.asList("xls", "xlsx", "xlsm");
 }

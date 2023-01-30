@@ -3,11 +3,6 @@ import UTIL from './util.js'
 export default class Generator {
 
     /**
-     * 生成数据（需要子类重写）
-     * */
-    generate();
-
-    /**
      * 构造函数: 指定格式、前缀、后缀
      */
     constructor(format = '', prefix = '', suffix = '') {
@@ -15,6 +10,13 @@ export default class Generator {
         this.prefix = prefix
         this.suffix = suffix
     }
+
+    /**
+     * 生成数据（需要子类重写）
+     * */
+    generate() {}
+
+
 
     /**
      * 生成字符串

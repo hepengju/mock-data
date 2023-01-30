@@ -1,8 +1,7 @@
 import dayjs from "dayjs"
 import numeral from "numeral"
 import _ from 'lodash'
-import { da } from "element-plus/es/locale"
-import BaseConst from "./consts/BaseConst"
+import BaseConst from "./consts/BaseConst.js"
 
 export default {
 
@@ -31,11 +30,7 @@ export default {
      */
     parse(value, format) {
         try {
-            if (value instanceof Date) {
-                return dayjs(value, format)
-            } else if (value instanceof Number) {
-                return numeral(value).value()
-            }
+            return dayjs(value, format).toDate()
         } catch (error) {
             return value
         }
@@ -57,10 +52,12 @@ export default {
         let str = ''
         if (date instanceof Date) {
             str = dayjs(date).format(BaseConst.DATE_TIME_FORMAT)
+        } else {
+            str = date.toString()
         }
 
-        str = date.substring(0, DATE_FORMAT.DATE_FORMAT.length)
+        str = str.substring(0, BaseConst.DATE_FORMAT.length)
 
-        return dayjs(str, BaseConst.DATE_FORMAT)
+        return dayjs(str, BaseConst.DATE_FORMAT).toDate()
     }
 }
