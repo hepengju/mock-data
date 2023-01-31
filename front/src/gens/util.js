@@ -59,5 +59,15 @@ export default {
         str = str.substring(0, BaseConst.DATE_FORMAT.length)
 
         return dayjs(str, BaseConst.DATE_FORMAT).toDate()
+    },
+
+    /**
+     * 输出生成器N次
+     */
+    log(gen, num = 10) {
+        console.log(gen.constructor)
+        for (let i = 0; i < num; i++) {
+            console.log(gen.generate())
+        }
     }
 }
