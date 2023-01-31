@@ -10,13 +10,15 @@ export default {
      */
     format(value, format) {
         try {
-            if (value instanceof Date) {
-                // https://dayjs.gitee.io/docs/zh-CN/display/format
-                format = format || BaseConst.DATE_TIME_FORMAT
-                return dayjs(value).format(format)
-            } else if (value instanceof Number) {
-                // http://numeraljs.com/#format
-                return numeral(value).format(format)
+            if (format) {
+                if (value instanceof Date) {
+                    // https://dayjs.gitee.io/docs/zh-CN/display/format
+                    format = format || BaseConst.DATE_TIME_FORMAT
+                    return dayjs(value).format(format)
+                } else if (value instanceof Number) {
+                    // http://numeraljs.com/#format
+                    return numeral(value).format(format)
+                }
             }
         } catch (error) {
             return value + ': ' + error.toString()
@@ -38,7 +40,7 @@ export default {
 
     /**
      * 随机值: 产生一个包括 lower 与 upper 之间的数
-     * 
+     *
      * @see https://www.lodashjs.com/docs/lodash.random
      */
     random(lower = 0, upper = 1) {
@@ -64,10 +66,20 @@ export default {
     /**
      * 输出生成器N次
      */
-    log(gen, num = 10) {
+    print(gen, num = 10) {
         console.log(gen.constructor)
         for (let i = 0; i < num; i++) {
             console.log(gen.generate())
+        }
+    },
+
+    /**
+     * 输出生成器N次
+     */
+    printString(gen, num = 10) {
+        console.log(gen.constructor)
+        for (let i = 0; i < num; i++) {
+            console.log(gen.generateString())
         }
     }
 }

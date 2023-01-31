@@ -21,12 +21,8 @@ export default class Generator {
         const value = this.generate();
         if (!value) return "";
 
-        let result = value.toString();
-
         // 格式化日期和数字
-        if (this.format) {
-            result = UTIL.format(this.value, this.format)
-        }
+        const result = UTIL.format(value, this.format)
 
         return this.prefix +  result + this.suffix
     }
