@@ -5,7 +5,7 @@ spring:
       static-locations:
         - "file:/app/static"                         # docker
         - "file:/root/app/mock-data/front/dist"      # linux
-        - "file:D:/git/mock-data/front/dist"         # windows
+        - "file:C:/Users/hepengju/Documents/git/hepengju/mock-data/front/dist"  # windows
 
   # spring boot 2.6.x结合swagger3.0.0不兼容问题
   mvc:
@@ -17,7 +17,7 @@ server:
   port: 443
   ssl:
     enabled: true
-    key-store: classpath:hepengju.com.jks
+    key-store: /app/hepengju.com.jks
     key-store-type: JKS
     key-store-password: 5l69bk1gqa3563
 
