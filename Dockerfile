@@ -12,6 +12,6 @@ EXPOSE 80
 
 ENTRYPOINT ["/bin/sh","-c","java ${JAVA_OPTS} -jar /app/app.jar"]
 
-# docker build -t mock-data:3.2 .
-# docker run -d --name mock-data -p 443:443 -p 80:80 -e "JAVA_OPTS=-Xms250M -Xmx800M" --restart=always mock-data:3.2
-# docker exec -it mock-data bash
+# docker build -t mock-data:3.3 .
+# docker run -d --name mockdata33 -p 443:443 -p 80:80 -e "JAVA_OPTS=-Xms250M -Xmx800M" --restart=always mock-data:3.3
+# docker exec -it mockdata33 bash
