@@ -46,8 +46,9 @@ public class WebUtil {
         response.setHeader("Original-Filename", webDecodeName);
 
         // 以下两个也加入, 以便可能的使用
-        response.setHeader("Original-Filename-Java", attachment);
-        response.setHeader("Original-Filename-Encode", fileName);
+        // 20230330 hepengju 在sprintboot3 jdk17中此处会报错 apache.coyote.http11.Http11Processor   : The HTTP response header [Original-Filename-Java] with value [测试表-20230320133721.xlsx] has been removed from the response because it is invalid
+        //response.setHeader("Original-Filename-Java", attachment);
+        //response.setHeader("Original-Filename-Encode", fileName);
 
         // 暴露响应头
         response.setHeader("Access-Control-Expose-Headers", "*");
