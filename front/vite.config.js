@@ -7,7 +7,7 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // let server_url = 'https://www.hepengju.com/'
-server_url = 'http://localhost:8080'
+const server_url = 'http://localhost:80'
 
 // https://vitejs.dev/config/
 export default defineConfig({
