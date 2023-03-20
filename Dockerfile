@@ -4,7 +4,7 @@ RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo "Asia/Shanghai" 
 
 WORKDIR app
 COPY front/dist            /app/static
-COPY docs/hepengju.com.jks /app/hepengju.com.jks
+COPY docs/hepengju.com.jks /app/cert/hepengju.com.jks
 COPY target/*.jar          /app/app.jar
 
 EXPOSE 443

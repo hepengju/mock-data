@@ -17,7 +17,7 @@ server:
   port: 443
   ssl:
     enabled: true
-    key-store: /app/hepengju.com.jks
+    key-store: /app/cert/hepengju.com.jks
     key-store-type: JKS
     key-store-password: 5l69bk1gqa3563
 
